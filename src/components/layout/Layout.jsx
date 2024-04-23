@@ -1,8 +1,14 @@
-import React from 'react'
+/* eslint-disable react/prop-types */
+import Header from "../header/Header"
+import Sidebar from "../sidebar/Sidebar"
 
-const Layout = () => {
+const Layout = ({ children }) => {
     return (
-        <div>Layout</div>
+        <div>
+            <Header />
+            <Sidebar />
+            {children}
+        </div>
     )
 }
 

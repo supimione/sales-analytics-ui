@@ -1,33 +1,24 @@
-import { useState } from 'react';
-import Home from './pages/dashboard/Dashboard';
-import Sales from './pages/sales/Sales';
+import { Routes, Route } from 'react-router-dom';
+
+//pages
+import Login from './pages/login/Login';
+import Dashboard from './pages/dashboard/Dashboard';
+import Purchase from './pages/home/Purchase';
+import Sales from './pages/home/Sales';
+import Unsold from './pages/home/Unsold';
+import Report from './pages/home/Report';
 
 const App = () => {
-  const [currentPage, setCurrentPage] = useState('home');
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <Home />;
-      case 'sales':
-        return <Sales />;
-      default:
-        return <Home />;
-    }
-  };
 
   return (
-    <div>
-      <nav>
-        <ul>
-          <li><button onClick={() => setCurrentPage('home')}>Home</button></li>
-          <li><button onClick={() => setCurrentPage('sales')}>About</button></li>
-        </ul>
-      </nav>
-      <main>
-        {renderPage()}
-      </main>
-    </div>
+    <Routes>
+      <Route exact path='/' element={<Login />} />
+      <Route exact path='/dashboard' element={<Dashboard />} />
+      <Route exact path='/purchase' element={<Purchase />} />
+      <Route exact path='/sales' element={<Sales />} />
+      <Route exact path='/unsold' element={<Unsold />} />
+      <Route exact path='/report' element={<Report />} />
+    </Routes>
   );
 }
 
