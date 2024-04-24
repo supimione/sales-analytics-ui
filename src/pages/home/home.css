@@ -1,0 +1,16 @@
+.table-container {
+  height: calc(100vh - 155px);
+
+  @media only screen and (max-width: 767px) {
+    overflow: scroll;
+  }
+}
+
+.pagination-container {
+  @media only screen and (min-width: 550px) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}

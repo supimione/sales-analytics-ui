@@ -1,15 +1,24 @@
 /* eslint-disable react/prop-types */
-import Header from "../header/Header"
-import Sidebar from "../sidebar/Sidebar"
+import { useState } from 'react';
+
+//components
+import Header from '../header/Header';
+import Sidebar from '../sidebar/Sidebar';
 
 const Layout = ({ children }) => {
-    return (
-        <div>
-            <Header />
-            <Sidebar />
-            {children}
-        </div>
-    )
-}
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-export default Layout
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  return (
+    <div>
+      <Header onMenuClick={toggleSidebar} />
+      {sidebarOpen && <Sidebar />}
+      {children}
+    </div>
+  );
+};
+
+export default Layout;
