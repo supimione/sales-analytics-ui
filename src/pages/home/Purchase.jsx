@@ -7,175 +7,185 @@ import './home.css';
 import Layout from '../../components/layout/Layout';
 
 const Purchase = () => {
-  const tableHeader = ['Date & Time', 'Same', ' From', 'To'];
+  const tableHeader = ['Date', 'Time', 'Same', ' From', 'To', 'Total'];
   const tableBody = [
     {
-      Date: '2024-04-19 3:30 PM',
-      Same: 'Blue',
-      From: 'Tablet',
-      To: '$499',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-18 4:45 PM',
-      Same: 'Green',
-      From: 'Headphones',
-      To: '$199',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-17 5:30 PM',
-      Same: 'Yellow',
-      From: 'Charger',
-      To: '$19',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-19 3:30 PM',
-      Same: 'Blue',
-      From: 'Tablet',
-      To: '$499',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-18 4:45 PM',
-      Same: 'Green',
-      From: 'Headphones',
-      To: '$199',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-19 3:30 PM',
-      Same: 'Blue',
-      From: 'Tablet',
-      To: '$499',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-18 4:45 PM',
-      Same: 'Green',
-      From: 'Headphones',
-      To: '$199',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-17 5:30 PM',
-      Same: 'Yellow',
-      From: 'Charger',
-      To: '$19',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-19 3:30 PM',
-      Same: 'Blue',
-      From: 'Tablet',
-      To: '$499',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-18 4:45 PM',
-      Same: 'Green',
-      From: 'Headphones',
-      To: '$199',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-19 3:30 PM',
-      Same: 'Blue',
-      From: 'Tablet',
-      To: '$499',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-18 4:45 PM',
-      Same: 'Green',
-      From: 'Headphones',
-      To: '$199',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-17 5:30 PM',
-      Same: 'Yellow',
-      From: 'Charger',
-      To: '$19',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-19 3:30 PM',
-      Same: 'Blue',
-      From: 'Tablet',
-      To: '$499',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-18 4:45 PM',
-      Same: 'Green',
-      From: 'Headphones',
-      To: '$199',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-19 3:30 PM',
-      Same: 'Blue',
-      From: 'Tablet',
-      To: '$499',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-18 4:45 PM',
-      Same: 'Green',
-      From: 'Headphones',
-      To: '$199',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-17 5:30 PM',
-      Same: 'Yellow',
-      From: 'Charger',
-      To: '$19',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-19 3:30 PM',
-      Same: 'Blue',
-      From: 'Tablet',
-      To: '$499',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-18 4:45 PM',
-      Same: 'Green',
-      From: 'Headphones',
-      To: '$199',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-19 3:30 PM',
-      Same: 'Blue',
-      From: 'Tablet',
-      To: '$499',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
     {
-      Date: '2024-04-18 4:45 PM',
-      Same: 'Green',
-      From: 'Headphones',
-      To: '$199',
-    },
-    {
-      Date: '2024-04-17 5:30 PM',
-      Same: 'Yellow',
-      From: 'Charger',
-      To: '$19',
-    },
-    {
-      Date: '2024-04-19 3:30 PM',
-      Same: 'Blue',
-      From: 'Tablet',
-      To: '$499',
-    },
-    {
-      Date: '2024-04-18 4:45 PM',
-      Same: 'Green',
-      From: 'Headphones',
-      To: '$199',
+      Date: '2024-04-19',
+      Time: 'Morning',
+      Same: 2,
+      From: 1245,
+      To: 3244,
+      Total: 123,
     },
   ];
-
-  // State variables for pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalItems = tableBody?.length;
-  const itemsPerPage = 13;
-
-  // Calculate the index range for the current page
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = tableBody.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Function to handle page change
-  const handlePageChange = pageNumber => {
-    setCurrentPage(pageNumber);
-  };
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -189,21 +199,21 @@ const Purchase = () => {
 
   return (
     <Layout>
-      <div className="p-4 mt-10 sm:ml-64">
-        <div className="flex items-center justify-between">
-          <h6 className="text-xl font-bold m-4">Purchase</h6>
+      <div className="body-container sm:ml-64">
+        <div className="flex items-center justify-between header-container purchase-table-head">
+          <h6 className="header-text purchase-text">Purchase Order</h6>
           <button
             type="button"
             onClick={openModal}
-            className="py-2 px-4 inline-flex items-center text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+            className="new-btn new-purchase"
           >
-            New Purchase
+            Add Purchase
           </button>
         </div>
 
-        <div className="border border-l-8 border-blue-800 shadow rounded-lg mt-3 relative table-container">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-900 uppercase bg-gray-200">
+        <div className="rounded-lg mt-3 relative table-container">
+          <table className="w-full text-sm text-left rtl:text-right">
+            <thead className="text-xs text-gray-900 uppercase purchase-table-head">
               <tr>
                 {tableHeader?.map((header, index) => (
                   <th key={index} scope="col" className="px-6 py-4">
@@ -214,76 +224,26 @@ const Purchase = () => {
             </thead>
 
             <tbody className="text-gray-700">
-              {currentItems?.map((row, index) => (
-                <tr key={index}>
-                  <td className="px-6 py-4">{row?.Date}</td>
-                  <td className="px-6 py-4">{row?.Same}</td>
-                  <td className="px-6 py-4">{row?.From}</td>
-                  <td className="px-6 py-4">{row?.To}</td>
+              {tableBody?.map((row, index) => (
+                <tr key={index} className="table-tr">
+                  <td className="px-6 py-3">{row?.Date}</td>
+                  <td className="px-6 py-3">{row?.Time}</td>
+                  <td className="px-6 py-3">{row?.Same}</td>
+                  <td className="px-6 py-3">{row?.From}</td>
+                  <td className="px-6 py-3">{row?.To}</td>
+                  <td className="px-6 py-3">{row?.Total}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-
-          {/* Pagination controls */}
-          <div className="bg-gray-100 p-2 border pagination-container">
-            <ul className="flex items-center -space-x-px h-8 text-sm">
-              <li>
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                >
-                  <svg
-                    className="w-2.5 h-2.5 rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path stroke="currentColor" d="M5 1 1 5l4 4" />
-                  </svg>
-                </button>
-              </li>
-              {Array.from({ length: totalPages }, (_, i) => (
-                <li key={i}>
-                  <button
-                    onClick={() => handlePageChange(i + 1)}
-                    className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ${
-                      i + 1 === currentPage ? 'font-semibold' : ''
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
-                </li>
-              ))}
-              <li>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={indexOfLastItem >= tableBody.length}
-                  className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-                >
-                  <svg
-                    className="w-2.5 h-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path stroke="currentColor" d="m1 9 4-4-4-4" />
-                  </svg>
-                </button>
-              </li>
-            </ul>
-          </div>
         </div>
 
         {isOpenModal && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 add-index">
             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Create New Product
+                  Add Product
                 </h3>
                 <button
                   type="button"
