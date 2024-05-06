@@ -9,6 +9,12 @@ import { useState } from 'react';
 const Header = ({ onMenuClick }) => {
   const [openProfile, setOpenProfile] = useState(false);
 
+  const [formData, setFormData] = useState({
+    name: '',
+    mobile: '',
+    price: '',
+  });
+
   const toggleProfile = () => {
     setOpenProfile(prevState => !prevState);
   };
@@ -21,6 +27,19 @@ const Header = ({ onMenuClick }) => {
 
   const closeModal = () => {
     setIsOpenModal(false);
+  };
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = () => {
+    console.log('test');
   };
 
   return (
@@ -101,13 +120,14 @@ const Header = ({ onMenuClick }) => {
               <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                 <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Add Product
+                    Add Member
                   </h3>
                   <IoMdClose
                     onClick={closeModal}
                     className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-5 h-5 inline-flex justify-center items-center cursor-pointer"
                   />
                 </div>
+
                 <form className="p-4 md:p-5">
                   <div className="grid gap-4 mb-4 grid-cols-2">
                     <div className="col-span-2">
@@ -117,10 +137,9 @@ const Header = ({ onMenuClick }) => {
                       <input
                         type="text"
                         name="name"
-                        id="name"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="Type product name"
-                        required=""
+                        autoComplete="off"
+                        onChange={handleChange}
+                        className="border rounded-lg w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                       />
                     </div>
                     <div className="col-span-2 sm:col-span-1">
@@ -129,11 +148,9 @@ const Header = ({ onMenuClick }) => {
                       </label>
                       <input
                         type="number"
-                        name="price"
-                        id="price"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="$2999"
-                        required=""
+                        name="mobile"
+                        onChange={handleChange}
+                        className="border rounded-lg w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                       />
                     </div>
                     <div className="col-span-2 sm:col-span-1">
@@ -143,14 +160,24 @@ const Header = ({ onMenuClick }) => {
                       <input
                         type="number"
                         name="price"
-                        id="price"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="$2999"
-                        required=""
+                        onChange={handleChange}
+                        className="border rounded-lg w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                       />
                     </div>
                   </div>
-                  <button className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                  <button
+                    type="button"
+                    className="save-btn"
+                    onClick={handleSubmit}
+                    disabled={
+                      formData.name == null ||
+                      formData.name === '' ||
+                      formData.mobile == null ||
+                      formData.mobile === '' ||
+                      formData.price == null ||
+                      formData.price === ''
+                    }
+                  >
                     Add
                   </button>
                 </form>

@@ -73,3 +73,11 @@
 .add-index {
   z-index: 557;
 }
+.save-btn {
+  color: #fff;
+  padding: 8px 30px;
+  border-radius: 4px;
+  width: 100%;
+  margin-top: 10px;
+  background-color: #ff5722;
+}

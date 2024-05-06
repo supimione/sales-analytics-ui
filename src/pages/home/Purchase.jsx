@@ -1,10 +1,16 @@
 import { useState } from 'react';
 
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'; // Import the styles
+
 //styles
 import './home.css';
 
 //components
 import Layout from '../../components/layout/Layout';
+
+//react-icons
+import { IoMdClose } from 'react-icons/io';
 
 const Purchase = () => {
   const tableHeader = ['Date', 'Time', 'Same', ' From', 'To', 'Total'];
@@ -189,12 +195,41 @@ const Purchase = () => {
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
+  const [formData, setFormData] = useState({
+    date: null,
+    time: '',
+    same: '',
+    from: null,
+    to: null,
+    total: null,
+  });
+
   const openModal = () => {
     setIsOpenModal(true);
   };
 
   const closeModal = () => {
     setIsOpenModal(false);
+  };
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    if (e.target.NAME === 'Time') {
+      const selectedOption = e.target.options[e.target.selectedIndex].value;
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: selectedOption,
+      }));
+    } else {
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleSubmit = () => {
+    console.log('test');
   };
 
   return (
@@ -243,41 +278,54 @@ const Purchase = () => {
             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Add Product
+                  Purchase
                 </h3>
-                <button
-                  type="button"
+                <IoMdClose
                   onClick={closeModal}
-                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  <svg
-                    className="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                  <span className="sr-only">Close modal</span>
-                </button>
+                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-5 h-5 inline-flex justify-center items-center cursor-pointer"
+                />
               </div>
+
               <form className="p-4 md:p-5">
                 <div className="grid gap-4 mb-4 grid-cols-2">
+                  <div className="col-span-2 sm:col-span-1">
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Date
+                    </label>
+                    <DatePicker
+                      selected={formData.date}
+                      onChange={date =>
+                        setFormData(prevState => ({ ...prevState, date }))
+                      }
+                      className="border rounded-lg w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                      dateFormat="yyyy-MM-dd"
+                    />
+                  </div>
+                  <div className="col-span-2 sm:col-span-1">
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Time
+                    </label>
+                    <select
+                      name="time"
+                      onChange={handleChange}
+                      className="border rounded-lg w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                    >
+                      <option selected>--- Choose ---</option>
+                      <option value="day">Day</option>
+                      <option value="morning">Morning</option>
+                      <option value="night">Night</option>
+                    </select>
+                  </div>
                   <div className="col-span-2">
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Name
+                      Same
                     </label>
                     <input
                       type="text"
-                      name="name"
-                      id="name"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="Type product name"
-                      required=""
+                      name="same"
+                      autoComplete="off"
+                      onChange={handleChange}
+                      className="border rounded-lg w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                     />
                   </div>
                   <div className="col-span-2 sm:col-span-1">
@@ -286,11 +334,9 @@ const Purchase = () => {
                     </label>
                     <input
                       type="number"
-                      name="price"
-                      id="price"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="$2999"
-                      required=""
+                      name="from"
+                      onChange={handleChange}
+                      className="border rounded-lg w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                     />
                   </div>
                   <div className="col-span-2 sm:col-span-1">
@@ -299,35 +345,43 @@ const Purchase = () => {
                     </label>
                     <input
                       type="number"
-                      name="price"
-                      id="price"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="$2999"
-                      required=""
+                      name="to"
+                      onChange={handleChange}
+                      className="border rounded-lg w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                     />
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-2 ">
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Product Description
+                      Total
                     </label>
-                    <textarea
-                      id="description"
-                      rows="4"
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="Write product description here"
-                    ></textarea>
+                    <input
+                      name="total"
+                      onChange={handleChange}
+                      className="border rounded-lg w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                    />
                   </div>
                 </div>
-                <button className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                  <svg
-                    className="me-1 -ms-1 w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"></path>
-                  </svg>
-                  Add new product
+
+                <button
+                  type="button"
+                  className="save-btn"
+                  onClick={handleSubmit}
+                  disabled={
+                    formData.date == null ||
+                    formData.date === '' ||
+                    formData.time == null ||
+                    formData.time === '' ||
+                    formData.same == null ||
+                    formData.same === '' ||
+                    formData.from == null ||
+                    formData.from === '' ||
+                    formData.to == null ||
+                    formData.to === '' ||
+                    formData.total == null ||
+                    formData.total === ''
+                  }
+                >
+                  Save
                 </button>
               </form>
             </div>
