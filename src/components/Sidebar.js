@@ -8,43 +8,45 @@ import Link from "next/link";
 const menuItems = [
   {
     id: 1,
+    link: "/distributer",
     title: "Master Data",
     icon: FaSignOutAlt,
     subMenu: [
-      { id: 1.1, title: "Distributer", link: "#" },
-      { id: 1.2, title: "Tickets", link: "#" },
+      { id: 1, title: "Distributer", link: "/distributer" },
+      { id: 1.2, title: "Tickets", link: "/tickets" },
     ],
   },
   {
     id: 2,
+    link: "/sales",
     title: "Sale",
     icon: FaLaptop,
   },
   {
     id: 3,
+    link: "/unsold",
     title: "Unsold",
     icon: FaLaptop,
   },
   {
     id: 4,
+    link: "/stocks",
     title: "Stock",
     icon: FaLaptop,
   },
   {
     id: 5,
+    link: "#",
     title: "Result",
     icon: FaLaptop,
-    subMenu: [
-      { id: 5.1, title: "Add Game Result", link: "#" },
-      { id: 5.2, title: "Result Game List", link: "#" },
-    ],
   },
   {
     id: 6,
+    link: "#",
     title: "Report",
     icon: FaLaptop,
     subMenu: [
-      { id: 6.1, title: "Sales Report", link: "#" },
+      { id: 6, title: "Sales Report", link: "#" },
       { id: 6.2, title: "UnSold Report", link: "#" },
       { id: 6.3, title: "Stock Report", link: "#" },
     ],
@@ -53,9 +55,28 @@ const menuItems = [
 
 export default function Sidebar() {
   const [openMenu, setOpenMenu] = useState(null); // Manage the open/close state for each sub-menu
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [activeSubMenu, setActiveSubMenu] = useState(null);
+  console.log(activeMenu, activeSubMenu, "activeSubMenu");
 
-  const toggleMenu = (menu) => {
-    setOpenMenu(openMenu === menu ? null : menu); // Toggle the menu open/close state
+  const toggleMenu = (id) => {
+    setActiveMenu(id);
+    setOpenMenu(openMenu === id ? null : id); // Toggle the menu open/close state
+    if (id === 1) {
+      setActiveSubMenu(1);
+    }
+    if (id === 6) {
+      setActiveSubMenu(6);
+    }
+  };
+
+  const toggleSubMenu = (id) => {
+    setActiveSubMenu(id);
+    if (id === 1.2) {
+      setActiveMenu(1);
+    } else if (id === 6.2 || id === 6.3) {
+      setActiveMenu(6);
+    }
   };
 
   return (
@@ -65,8 +86,12 @@ export default function Sidebar() {
           {menuItems.map((item) => (
             <li key={item.id}>
               <Link
-                href="#"
-                className="flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 dark:hover:text-white"
+                href={item.link}
+                className={`flex items-center px-4 py-2 text-sm font-semibold ${
+                  activeMenu === item.id
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-700 dark:text-gray-300"
+                } dark:hover:text-white`}
                 onClick={() => toggleMenu(item.id)}
               >
                 <span className="bg-gray-200 p-2 rounded-full mr-2">
@@ -76,13 +101,23 @@ export default function Sidebar() {
                 {item.subMenu && <IoMdArrowDropdown className="ml-auto" />}
               </Link>
               {openMenu === item.id && item.subMenu && (
-                <ol className="submenu list-none ml-8">
+                <ol className="submenu list-none ml-14">
                   {item.subMenu.map((subItem) => (
                     <li
                       key={subItem.id}
-                      className="submenu-item before:content-['-'] before:mr-2"
+                      className="text-sm submenu-item leading-6 before:content-['-'] before:mr-2"
                     >
-                      <Link href={subItem.link}>{subItem.title}</Link>
+                      <Link
+                        href={subItem.link}
+                        className={`${
+                          activeSubMenu === subItem.id
+                            ? "text-blue-600 dark:text-blue-400"
+                            : "text-gray-700 dark:text-gray-300"
+                        }`}
+                        onClick={() => toggleSubMenu(subItem.id)}
+                      >
+                        {subItem.title}
+                      </Link>
                     </li>
                   ))}
                 </ol>
