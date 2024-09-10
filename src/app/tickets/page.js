@@ -36,50 +36,15 @@ export default function Home() {
           <div className="flex items-center">
             <h1 className="text-xl font-bold">Tickets</h1>
           </div>
-          <nav className="flex" aria-label="Breadcrumb">
-            <ol className="inline-flex items-center space-x-1 md:space-x-3">
-              <li className="inline-flex items-center">
-                <Link
-                  href="#"
-                  className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700"
-                >
-                  <FaHome />
-                </Link>
-              </li>
-              <li>
-                <div className="flex items-center">
-                  <svg
-                    className="w-6 h-6 text-gray-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <Link
-                    href="#"
-                    className="ml-1 text-sm font-medium text-gray-500 hover:text-gray-700 md:ml-2"
-                  >
-                    All Tickets
-                  </Link>
-                </div>
-              </li>
-            </ol>
-          </nav>
-        </div>
-
-        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-6">
           <button
             className="mb-4 px-4 py-2 text-sm text-white bg-sky-600 rounded hover:bg-sky-700"
             onClick={handleOpenPopup}
           >
             + Add Tickets
           </button>
+        </div>
 
+        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-6">
           <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
