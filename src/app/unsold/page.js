@@ -28,13 +28,13 @@ export default function Home() {
       <div className="py-4 px-2 sm:ml-64">
         <div className="flex justify-between items-center mt-14">
           <div className="flex items-center">
-            <h1 className="text-xl font-bold">Ticket Sale List</h1>
+            <h1 className="text-xl font-bold">Unsold List</h1>
           </div>
           <button
             className="px-4 py-2 text-sm text-white bg-sky-600 rounded hover:bg-sky-700"
             onClick={handleOpenPopup}
           >
-            + Add Sales
+            + Add Unsold Item
           </button>
         </div>
       </div>
@@ -49,8 +49,8 @@ export default function Home() {
         <CreateSalePopup
           isOpen={isPopupOpen}
           onClose={handleOpenPopup}
-          title="Add Ticket Sale"
-          okBtnText="Create Sale"
+          title="Add Unsold Item"
+          okBtnText="Submit"
           // handleSubmit={}
         />
       )}

@@ -19,25 +19,16 @@ const menuItems = [
     id: 2,
     title: "Sale",
     icon: FaLaptop,
-    subMenu: [
-      { id: 2.1, title: "Ticket Sale List", link: "#" },
-      { id: 2.2, title: "Add Ticket Sale", link: "#" },
-    ],
   },
   {
     id: 3,
     title: "Unsold",
     icon: FaLaptop,
-    subMenu: [
-      { id: 3.1, title: "Unsold List", link: "#" },
-      { id: 3.2, title: "Add Unsold Distributer", link: "#" },
-    ],
   },
   {
     id: 4,
     title: "Stock",
     icon: FaLaptop,
-    subMenu: [{ id: 4.1, title: "Stock List", link: "#" }],
   },
   {
     id: 5,
