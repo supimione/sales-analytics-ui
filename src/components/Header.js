@@ -5,8 +5,9 @@ import { useState } from "react";
 import Image from "next/image";
 import Logo from "../images/logo.png";
 import Admin from "../images/admin.jpg";
-
-import { FaUser, FaKey, FaSignOutAlt } from "react-icons/fa";
+import Link from "next/link";
+import { IoMdSettings } from "react-icons/io";
+import { FaKey, FaSignOutAlt } from "react-icons/fa";
 
 export default function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -77,33 +78,33 @@ export default function Header() {
             </div>
             <ul className="py-1" role="none">
               <li>
-                <a
+                <Link
                   href="#"
                   className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                   role="menuitem"
                 >
-                  <FaUser className="mr-2" /> Settings
-                </a>
+                  <IoMdSettings className="mr-2" /> Settings
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="#"
                   className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                   role="menuitem"
                 >
                   <FaKey className="mr-2" /> Change Password
-                </a>
+                </Link>
               </li>
               {/* Separator Line */}
               <hr className="border-gray-200 dark:border-gray-600 my-1" />
               <li>
-                <a
+                <Link
                   href="#"
                   className="flex items-center px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                   role="menuitem"
                 >
                   <FaSignOutAlt className="mr-2" /> Sign out
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
