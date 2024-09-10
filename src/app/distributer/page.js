@@ -39,9 +39,20 @@ const distributorData = [
 
 export default function Home() {
   const [isPopupOpen, setPopupOpen] = useState(false);
+  const [isDeletePopupOpen, setDeletePopupOpen] = useState(false);
 
   const handleOpenPopup = () => {
     setPopupOpen(!isPopupOpen);
+  };
+
+  // Open delete confirmation popup
+  const handleDeleteClick = (itemId) => {
+    setDeletePopupOpen(true);
+  };
+
+  // Close delete popup
+  const handleCancelDelete = () => {
+    setDeletePopupOpen(false);
   };
 
   return (
@@ -130,7 +141,10 @@ export default function Home() {
                     <td className="px-6 py-4">{item.eve}</td>
                     <td className="px-6 py-4 flex space-x-2">
                       <MdEditDocument className="text-blue-500 cursor-pointer text-xl hover:text-blue-700" />
-                      <MdDelete className="text-red-500 cursor-pointer text-xl hover:text-red-700" />
+                      <MdDelete
+                        className="text-red-500 cursor-pointer text-xl hover:text-red-700"
+                        onClick={() => handleDeleteClick(1)}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -266,6 +280,27 @@ export default function Home() {
               </button>
               <button className="px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-700">
                 Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDeletePopupOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3 className="text-lg font-bold mb-4">Confirm Deletion</h3>
+            <p>Are you sure you want to delete this item?</p>
+
+            <div className="flex justify-end space-x-2 mt-6">
+              <button
+                onClick={handleCancelDelete}
+                className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button className="px-4 py-2 text-sm text-white bg-red-600 rounded hover:bg-red-700">
+                Okay
               </button>
             </div>
           </div>
