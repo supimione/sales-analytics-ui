@@ -36,7 +36,7 @@ const menuItems = [
   },
   {
     id: 5,
-    link: "#",
+    link: "/result",
     title: "Result",
     icon: FaLaptop,
   },
@@ -57,7 +57,6 @@ export default function Sidebar() {
   const [openMenu, setOpenMenu] = useState(null); // Manage the open/close state for each sub-menu
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubMenu, setActiveSubMenu] = useState(null);
-  console.log(activeMenu, activeSubMenu, "activeSubMenu");
 
   const toggleMenu = (id) => {
     setActiveMenu(id);
@@ -80,8 +79,9 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700">
-      <div className="h-full px-3 pb-4 pt-4 overflow-y-auto bg-white dark:bg-gray-800">
+    <aside className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between">
+      {/* Menu items */}
+      <div className="h-full px-3 pb-4 pt-4 overflow-y-auto bg-white dark:bg-gray-800 flex-grow">
         <ul>
           {menuItems.map((item) => (
             <li key={item.id}>
@@ -89,7 +89,7 @@ export default function Sidebar() {
                 href={item.link}
                 className={`flex items-center px-4 py-2 text-sm font-semibold ${
                   activeMenu === item.id
-                    ? "text-blue-600 dark:text-blue-400"
+                    ? "text-[#597cff] dark:text-[#597cff]"
                     : "text-gray-700 dark:text-gray-300"
                 } dark:hover:text-white`}
                 onClick={() => toggleMenu(item.id)}
@@ -111,7 +111,7 @@ export default function Sidebar() {
                         href={subItem.link}
                         className={`${
                           activeSubMenu === subItem.id
-                            ? "text-blue-600 dark:text-blue-400"
+                            ? "text-[#597cff] dark:text-[#597cff]"
                             : "text-gray-700 dark:text-gray-300"
                         }`}
                         onClick={() => toggleSubMenu(subItem.id)}

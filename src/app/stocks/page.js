@@ -31,7 +31,7 @@ export default function Home() {
             <h1 className="text-xl font-bold">All Stocks</h1>
           </div>
           <button
-            className="px-4 py-2 text-sm text-white bg-sky-600 rounded hover:bg-sky-700"
+            className="px-4 py-2 text-sm text-white bg-[#597cff] rounded hover:bg-sky-700"
             onClick={handleOpenPopup}
           >
             + Add New Stock

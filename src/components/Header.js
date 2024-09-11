@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Logo from "../images/logo.png";
+import HeaderLogo from "../images/header-logo.png";
 import Admin from "../images/admin.jpg";
 import Link from "next/link";
 import { IoMdSettings } from "react-icons/io";
@@ -18,7 +18,7 @@ export default function Header() {
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-      <div className="px-4 py-2">
+      <div className="px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center justify-start rtl:justify-end">
             <button
@@ -42,10 +42,7 @@ export default function Header() {
                 ></path>
               </svg>
             </button>
-            <Image src={Logo} className="w-16 h-12 me-3" alt="FlowBite Logo" />
-            <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-              LMS Lottery
-            </span>
+            <Image src={HeaderLogo} className="w-48 h-10" alt="LMS Logo" />
           </div>
 
           <div className="flex items-center gap-2">
@@ -53,14 +50,14 @@ export default function Header() {
               src={Admin}
               alt="Admin Picture"
               onClick={toggleUserMenu}
-              className="w-10 h-10 rounded-full cursor-pointer"
+              className="w-10 h-10 rounded-full border border-[#597cff] cursor-pointer"
             />
             <div>
               <p className="text-sm text-gray-800 font-semibold leading-4 dark:text-gray-400">
-                Neil Sims
+                Rahit Roy
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                neil.sims@gmail.com
+                admin@gmail.com
               </p>
             </div>
           </div>

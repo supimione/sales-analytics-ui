@@ -37,7 +37,7 @@ export default function Home() {
             <h1 className="text-xl font-bold">Tickets</h1>
           </div>
           <button
-            className="mb-4 px-4 py-2 text-sm text-white bg-sky-600 rounded hover:bg-sky-700"
+            className="mb-4 px-4 py-2 text-sm text-white bg-[#597cff] rounded hover:bg-sky-700"
             onClick={handleOpenPopup}
           >
             + Add Tickets
@@ -87,7 +87,7 @@ export default function Home() {
 
       {isPopupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white text-gray-900 p-6 rounded-lg shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white text-gray-900 p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center bg-blue-600 text-white p-4 rounded-t-lg">
               <h2 className="text-xl font-bold">Add Tickets</h2>
               <IoMdClose
