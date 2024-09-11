@@ -1,8 +1,6 @@
 "use client"; // Required for UI manipulation or using any React hook
 
 import { useState } from "react";
-import Link from "next/link";
-import { FaHome } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { MdDelete, MdEditDocument } from "react-icons/md";
 
@@ -10,6 +8,7 @@ export default function Home() {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState("MOR");
   const [isDeletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [showWinners, setShowWinners] = useState(false);
 
   const handleOpenPopup = () => {
     setPopupOpen(!isPopupOpen);
@@ -27,6 +26,10 @@ export default function Home() {
   // Close delete popup
   const handleCancelDelete = () => {
     setDeletePopupOpen(false);
+  };
+
+  const handleShowWinners = () => {
+    setShowWinners(!showWinners);
   };
 
   return (
@@ -80,7 +83,12 @@ export default function Home() {
                   >
                     1
                   </th>
-                  <td className="px-6 py-4">RESULT - 1</td>
+                  <td
+                    className="px-6 py-4 cursor-pointer"
+                    onClick={() => handleShowWinners(1)}
+                  >
+                    RESULT - 1
+                  </td>
                   <td className="px-6 py-4">Wed</td>
                   <td className="px-6 py-4">2024-09-11</td>
                   <td className="px-6 py-4">Wed</td>
@@ -886,6 +894,29 @@ export default function Home() {
               <button className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
                 Add
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showWinners && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white text-gray-900 p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center bg-blue-600 text-white p-4 rounded-t-lg">
+              <h2 className="text-xl font-bold">Result Details</h2>
+              <IoMdClose className="cursor-pointer text-xl" />
+            </div>
+
+            <div className="p-4 space-y-4">
+              <h3 className="text-lg font-semibold">RESULT - 1</h3>
+              <p>Date: 2024-09-11</p>
+              <p>Session: MOR</p>
+
+              <div className="flex justify-center mt-6">
+                <button className="px-8 py-2 text-sm text-white bg-blue-500 rounded hover:bg-blue-600">
+                  Download PDF
+                </button>
+              </div>
             </div>
           </div>
         </div>
