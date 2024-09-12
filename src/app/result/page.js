@@ -1,35 +1,144 @@
 "use client"; // Required for UI manipulation or using any React hook
 
+import DeletePopup from "@/components/DeletePopup";
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { MdDelete, MdEditDocument } from "react-icons/md";
 
+const ticketTableHeader = [
+  "Sl No.",
+  "Result Ref No.",
+  "Day",
+  "Date",
+  "Lottery Name",
+  "Sessions",
+  "Action",
+];
+
+const getCurrentDate = () => {
+  const today = new Date();
+  return today.toISOString().split("T")[0]; // Returns date in YYYY-MM-DD format
+};
+
+const getCurrentDay = () => {
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const today = new Date();
+  return daysOfWeek[today.getDay()]; // Returns the current day of the week
+};
+
 export default function Home() {
-  const [isPopupOpen, setPopupOpen] = useState(false);
-  const [selectedTime, setSelectedTime] = useState("MOR");
-  const [isDeletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [showWinners, setShowWinners] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const [ticketGridData, setTicketGridData] = useState([]);
+
+  const tenInputs = Array.from({ length: 10 }, (_, i) => i + 1); // Create an array of numbers 1 to 10
+  const hundredInputs = Array.from({ length: 100 }, (_, i) => i + 1); // Create an array of numbers 1 to 100
+
+  // Initialize state with dynamic date and day
+  const [dropdownData, setDropdownData] = useState({
+    date: getCurrentDate(),
+    session: "MOR",
+    day: getCurrentDay(),
+  });
+  const [inputData, setInputData] = useState("");
+
+  const handleDropdownChange = (e) => {
+    const { name, value } = e.target;
+    setDropdownData((prevData) => ({
+      ...prevData,
+      [name]: value, // Update the corresponding field in the state
+    }));
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (/^\d*$/.test(value) && value.length <= 5) {
+      setInputData((prevData) => ({
+        ...prevData,
+        [name]: value, // Update the specific field based on the input's name
+      }));
+    }
+  };
 
   const handleOpenPopup = () => {
-    setPopupOpen(!isPopupOpen);
-  };
-
-  const handleTimeSelection = (time) => {
-    setSelectedTime(time);
-  };
-
-  // Open delete confirmation popup
-  const handleDeleteClick = (itemId) => {
-    setDeletePopupOpen(true);
-  };
-
-  // Close delete popup
-  const handleCancelDelete = () => {
-    setDeletePopupOpen(false);
+    setPopupOpen(!popupOpen);
+    setUpdate(false);
   };
 
   const handleShowWinners = () => {
     setShowWinners(!showWinners);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+
+    // Combine dropdownData and inputData into a single object
+    const combinedData = {
+      ...dropdownData,
+      ...inputData,
+    };
+
+    console.log("Dropdown Data:", dropdownData);
+    console.log("Input Data:", inputData);
+    console.log("Combined Data:", combinedData);
+
+    // Assuming ticketGridData is an array and you want to add the new combined data to it
+    setTicketGridData((prevData) => [...prevData, combinedData]);
+
+    // Close the popup
+    setPopupOpen(false);
+  };
+
+  const handleEditTicketPrize = (item) => {
+    // Initialize dropdown data with item values or default values
+    setDropdownData({
+      date: item.date,
+      session: item.session,
+      day: item.day,
+    });
+
+    // Helper function to generate prize fields dynamically
+    const generatePrizeData = (prefix, count) => {
+      const prizeData = {};
+      for (let i = 1; i <= count; i++) {
+        prizeData[`${prefix}${i}`] = item[`${prefix}${i}`];
+      }
+      return prizeData;
+    };
+
+    // Set input data dynamically for each prize category
+    setInputData({
+      firstPrize: item.firstPrize,
+
+      ...generatePrizeData("secondPrize", 10),
+      ...generatePrizeData("thirdPrize", 10),
+      ...generatePrizeData("fourthPrize", 10),
+      ...generatePrizeData("fifthPrize", 10),
+      ...generatePrizeData("sixthPrize", 100), // Adjust count if needed
+    });
+
+    setPopupOpen(!popupOpen);
+    setUpdate(true);
+  };
+
+  // Open delete confirmation popup
+  const handleDeleteClick = (props) => {
+    setIsDeletePopupOpen(!isDeletePopupOpen);
+  };
+
+  // Close delete popup
+  const handleCancelDelete = () => {
+    setIsDeletePopupOpen(!isDeletePopupOpen);
   };
 
   return (
@@ -52,68 +161,75 @@ export default function Home() {
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="px-6 py-3">
-                    SL No.
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Result Ref No.
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Day
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Date
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Lottery Name
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Sessions
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-right">
-                    Action
-                  </th>
+                  {ticketTableHeader.map((item) => (
+                    <th scope="col" className="px-6 py-3" key={item}>
+                      {item}
+                    </th>
+                  ))}
                 </tr>
               </thead>
-              <tbody>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <th
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                  >
-                    1
-                  </th>
-                  <td
-                    className="px-6 py-4 cursor-pointer"
-                    onClick={() => handleShowWinners(1)}
-                  >
-                    RESULT - 1
-                  </td>
-                  <td className="px-6 py-4">Wed</td>
-                  <td className="px-6 py-4">2024-09-11</td>
-                  <td className="px-6 py-4">Wed</td>
-                  <td className="px-6 py-4">MOR</td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end space-x-2">
-                      <MdEditDocument className="text-blue-500 cursor-pointer text-xl hover:text-blue-700" />
-                      <MdDelete
-                        className="text-red-500 cursor-pointer text-xl hover:text-red-700"
-                        onClick={() => handleDeleteClick(1)}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
+              {ticketGridData?.length > 0 ? (
+                <tbody>
+                  {ticketGridData.map((item, index) => (
+                    <tr
+                      key={item.id}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        {index + 1}
+                      </th>
+                      <td
+                        className="px-6 py-4 text-blue-500 underline cursor-pointer"
+                        onClick={handleShowWinners}
+                      >
+                        RESULT {index + 1}
+                      </td>
+                      <td className="px-6 py-4">{item.day}</td>
+                      <td className="px-6 py-4">{item.date}</td>
+                      <td className="px-6 py-4">{item.lotteryName}</td>
+                      <td className="px-6 py-4">{item.session}</td>
+                      <td className="px-6 py-4 flex space-x-2">
+                        <MdEditDocument
+                          className="text-blue-500 cursor-pointer text-xl hover:text-blue-700"
+                          onClick={() => handleEditTicketPrize(item)}
+                        />
+                        <MdDelete
+                          className="text-red-500 cursor-pointer text-xl hover:text-red-700"
+                          onClick={() => handleDeleteClick(item.id)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              ) : (
+                <tbody>
+                  <tr>
+                    <td
+                      colSpan="8" // Adjust this number based on the number of columns in your table
+                      className="text-center p-6"
+                    >
+                      <div className="text-gray-500 dark:text-gray-400 text-base">
+                        No Data Found
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              )}
             </table>
           </div>
         </div>
       </div>
 
-      {isPopupOpen && (
+      {popupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white text-gray-900 p-6 rounded-lg shadow-lg w-full max-w-5xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center bg-blue-600 text-white p-4 rounded-t-lg">
-              <h2 className="text-xl font-bold">Add Tickets</h2>
+              <h2 className="text-xl font-bold">
+                {update ? "Update Tickets Prizes" : "Add Tickets Prizes"}
+              </h2>
               <IoMdClose
                 onClick={handleOpenPopup}
                 className="cursor-pointer text-xl"
@@ -132,755 +248,141 @@ export default function Home() {
                   </label>
                   <input
                     type="date"
+                    name="date"
+                    value={dropdownData.date}
+                    onChange={handleDropdownChange}
                     className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                    value="2024-09-10"
                   />
                 </div>
                 <div>
                   <label className="block mb-2 text-sm font-medium">
                     Session
                   </label>
-                  <select className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700 focus:outline-none">
-                    <option value="">-</option>
+                  <select
+                    name="session"
+                    value={dropdownData.session}
+                    onChange={handleDropdownChange}
+                    className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700 focus:outline-none"
+                  >
+                    <option value="MOR">MOR</option>
+                    <option value="DAY">DAY</option>
+                    <option value="EVE">EVE</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block mb-2 text-sm font-medium">
-                    Lottery
-                  </label>
-                  <select className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700 focus:outline-none">
-                    <option value="">-</option>
+                  <label className="block mb-2 text-sm font-medium">Day</label>
+                  <select
+                    name="lottery"
+                    value={dropdownData.day}
+                    onChange={handleDropdownChange}
+                    className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700 focus:outline-none"
+                  >
+                    <option value="Sunday">Sunday</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
                   </select>
                 </div>
               </div>
 
-              <h3 className="text-xl font-bold mb-4">Prizes 1</h3>
+              <h3 className="text-xl font-bold mb-4">1st Prize </h3>
               <div className="grid grid-cols-5 gap-4">
                 <input
-                  type="text"
-                  placeholder="Prize 1"
+                  type="number"
+                  name="firstPrize"
+                  placeholder="1st Prize"
+                  value={inputData?.firstPrize}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                 />
               </div>
 
-              <h3 className="text-xl font-bold mb-4">Prizes 2</h3>
+              <h3 className="text-xl font-bold mb-4">2nd Prizes</h3>
               <div className="grid grid-cols-5 gap-4">
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="6"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="7"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="8"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="9"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="10"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
+                {tenInputs.map((num) => (
+                  <input
+                    key={num}
+                    type="number"
+                    name={`secondPrize${num}`}
+                    placeholder={`${num}`}
+                    onChange={handleInputChange}
+                    value={inputData[`secondPrize${num}`] || ""}
+                    className={
+                      "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                    }
+                  />
+                ))}
               </div>
 
-              <h3 className="text-xl font-bold mb-4">Prizes 3</h3>
+              <h3 className="text-xl font-bold mb-4">3rd Prizes</h3>
               <div className="grid grid-cols-5 gap-4">
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="6"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="7"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="8"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="9"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="10"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
+                {tenInputs.map((num) => (
+                  <input
+                    key={num}
+                    type="number"
+                    name={`thirdPrize${num}`}
+                    placeholder={`${num}`}
+                    onChange={handleInputChange}
+                    value={inputData[`thirdPrize${num}`] || ""}
+                    className={
+                      "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                    }
+                  />
+                ))}
               </div>
 
-              <h3 className="text-xl font-bold mb-4">Prizes 4</h3>
+              <h3 className="text-xl font-bold mb-4">4th Prizes</h3>
               <div className="grid grid-cols-5 gap-4">
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="6"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="7"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="8"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="9"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="10"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
+                {tenInputs.map((num) => (
+                  <input
+                    key={num}
+                    type="number"
+                    name={`fourthPrize${num}`}
+                    placeholder={`${num}`}
+                    onChange={handleInputChange}
+                    value={inputData[`fourthPrize${num}`] || ""}
+                    className={
+                      "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                    }
+                  />
+                ))}
               </div>
 
-              <h3 className="text-xl font-bold mb-4">Prizes 5</h3>
+              <h3 className="text-xl font-bold mb-4">5th Prizes</h3>
               <div className="grid grid-cols-5 gap-4">
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="6"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="7"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="8"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="9"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="10"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
+                {tenInputs.map((num) => (
+                  <input
+                    key={num}
+                    type="number"
+                    name={`fifthPrize${num}`}
+                    placeholder={`${num}`}
+                    onChange={handleInputChange}
+                    value={inputData[`fifthPrize${num}`] || ""}
+                    className={
+                      "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                    }
+                  />
+                ))}
               </div>
 
-              <h3 className="text-xl font-bold mb-4">Prizes 6</h3>
+              <h3 className="text-xl font-bold mb-4">6th Prizes</h3>
               <div className="grid grid-cols-5 gap-4">
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="6"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="7"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="8"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="9"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="10"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />{" "}
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="1"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="2"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="3"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="4"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
-                <input
-                  type="text"
-                  placeholder="5"
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                />
+                {hundredInputs.map((num) => (
+                  <input
+                    key={num}
+                    type="number"
+                    name={`sixthPrize${num}`}
+                    placeholder={`${num}`}
+                    onChange={handleInputChange}
+                    value={inputData[`sixthPrize${num}`] || ""}
+                    className={
+                      "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                    }
+                  />
+                ))}
               </div>
             </div>
 
@@ -891,8 +393,11 @@ export default function Home() {
               >
                 Cancel
               </button>
-              <button className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
-                Add
+              <button
+                onClick={handleSubmit}
+                className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
+              >
+                {update ? "Update Tickets" : "Add Tickets"}
               </button>
             </div>
           </div>
@@ -904,7 +409,10 @@ export default function Home() {
           <div className="bg-white text-gray-900 p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center bg-blue-600 text-white p-4 rounded-t-lg">
               <h2 className="text-xl font-bold">Result Details</h2>
-              <IoMdClose className="cursor-pointer text-xl" />
+              <IoMdClose
+                className="cursor-pointer text-xl"
+                onClick={handleShowWinners}
+              />
             </div>
 
             <div className="p-4 space-y-4">
@@ -923,24 +431,11 @@ export default function Home() {
       )}
 
       {isDeletePopupOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h3 className="text-lg font-bold mb-4">Confirm Deletion</h3>
-            <p>Are you sure you want to delete this item?</p>
-
-            <div className="flex justify-end space-x-2 mt-6">
-              <button
-                onClick={handleCancelDelete}
-                className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button className="px-4 py-2 text-sm text-white bg-red-600 rounded hover:bg-red-700">
-                Okay
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeletePopup
+          isOpen={isDeletePopupOpen}
+          onClose={handleCancelDelete}
+          // onConfirm={}
+        />
       )}
     </>
   );

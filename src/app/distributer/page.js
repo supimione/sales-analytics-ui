@@ -14,34 +14,19 @@ const distributorHeader = [
   "EVE",
   "Action",
 ];
-const initialDistributorData = [
-  {
-    id: 1,
-    name: "Silver",
-    phone: "12345678911",
-    email: "test@gmail.com",
-    mor: "9.5",
-    day: "9.5",
-    eve: "9.5",
-  },
-  {
-    id: 2,
-    name: "Gold",
-    phone: "98765432100",
-    email: "example@gmail.com",
-    mor: "8.0",
-    day: "7.5",
-    eve: "6.5",
-  },
-];
 
 export default function Home() {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [isDeletePopupOpen, setDeletePopupOpen] = useState(false);
-  const [distributorData, setDistributorData] = useState(
-    initialDistributorData
-  );
-  console.log(distributorData, "distributorData");
+  const [distributorData, setDistributorData] = useState({
+    id: null,
+    name: "",
+    phone: "",
+    email: "",
+    mor: "",
+    day: "",
+    eve: "",
+  });
 
   // Form state
   const [formData, setFormData] = useState({
@@ -134,34 +119,50 @@ export default function Home() {
                   ))}
                 </tr>
               </thead>
-              <tbody>
-                {distributorData.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+
+              {distributorData?.length > 0 ? (
+                <tbody>
+                  {distributorData.map((item, index) => (
+                    <tr
+                      key={item.id}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                     >
-                      {index + 1}
-                    </th>
-                    <td className="px-6 py-4">{item.name}</td>
-                    <td className="px-6 py-4">{item.phone}</td>
-                    <td className="px-6 py-4">{item.email}</td>
-                    <td className="px-6 py-4">{item.mor}</td>
-                    <td className="px-6 py-4">{item.day}</td>
-                    <td className="px-6 py-4">{item.eve}</td>
-                    <td className="px-6 py-4 flex space-x-2">
-                      <MdEditDocument className="text-blue-500 cursor-pointer text-xl hover:text-blue-700" />
-                      <MdDelete
-                        className="text-red-500 cursor-pointer text-xl hover:text-red-700"
-                        onClick={() => handleDeleteClick(item.id)}
-                      />
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        {index + 1}
+                      </th>
+                      <td className="px-6 py-4">{item.name}</td>
+                      <td className="px-6 py-4">{item.phone}</td>
+                      <td className="px-6 py-4">{item.email}</td>
+                      <td className="px-6 py-4">{item.mor}</td>
+                      <td className="px-6 py-4">{item.day}</td>
+                      <td className="px-6 py-4">{item.eve}</td>
+                      <td className="px-6 py-4 flex space-x-2">
+                        <MdEditDocument className="text-blue-500 cursor-pointer text-xl hover:text-blue-700" />
+                        <MdDelete
+                          className="text-red-500 cursor-pointer text-xl hover:text-red-700"
+                          onClick={() => handleDeleteClick(item.id)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              ) : (
+                <tbody>
+                  <tr>
+                    <td
+                      colSpan={distributorHeader.length}
+                      className="text-center p-6"
+                    >
+                      <div className="text-gray-500 dark:text-gray-400 text-base">
+                        No Data Found
+                      </div>
                     </td>
                   </tr>
-                ))}
-              </tbody>
+                </tbody>
+              )}
             </table>
           </div>
         </div>
@@ -312,7 +313,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Delete Confirmation Popup */}
       {isDeletePopupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
