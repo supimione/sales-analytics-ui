@@ -25,3 +25,10 @@ body {
     text-wrap: balance;
   }
 }
+
+.a4-page {
+  width: 21cm;
+  height: 29.7cm;
+  margin: auto;
+  border: 1px solid #ddd;
+}

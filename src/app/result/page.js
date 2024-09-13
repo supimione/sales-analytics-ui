@@ -1,8 +1,10 @@
 "use client"; // Required for UI manipulation or using any React hook
 
+import { useEffect, useState } from "react";
 import DeletePopup from "@/components/DeletePopup";
-import { useState } from "react";
-import { IoMdClose } from "react-icons/io";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { IoMdClose, IoMdDownload } from "react-icons/io";
 import { MdDelete, MdEditDocument } from "react-icons/md";
 
 const ticketTableHeader = [
@@ -13,6 +15,163 @@ const ticketTableHeader = [
   "Lottery Name",
   "Sessions",
   "Action",
+];
+
+const prizeData = [
+  {
+    prize: "1st Prize ₹1 Crore/-",
+    numbers: ["56E 81013"],
+  },
+  {
+    prize: "2nd Prize ₹9000/-",
+    numbers: [
+      "13142",
+      "13458",
+      "18574",
+      "29786",
+      "30127",
+      "34518",
+      "45754",
+      "52222",
+      "85210",
+      "94495",
+    ],
+  },
+  {
+    prize: "3rd Prize ₹450/-",
+    numbers: [
+      "0941",
+      "1771",
+      "4993",
+      "5126",
+      "5273",
+      "5968",
+      "6065",
+      "7481",
+      "7502",
+      "9372",
+    ],
+  },
+  {
+    prize: "4th Prize ₹250/-",
+    numbers: [
+      "0153",
+      "0967",
+      "2747",
+      "4677",
+      "5062",
+      "6075",
+      "7705",
+      "7846",
+      "8720",
+      "8536",
+    ],
+  },
+  {
+    prize: "5th Prize ₹120/-",
+    numbers: [
+      "0132",
+      "1082",
+      "2246",
+      "3541",
+      "4589",
+      "7049",
+      "7696",
+      "8621",
+      "9196",
+      "9295",
+      "0668",
+      "1222",
+      "2473",
+      "3548",
+      "5050",
+      "7169",
+      "7832",
+      "8889",
+      "9235",
+      "0829",
+      "1336",
+      "2585",
+      "3754",
+      "5380",
+      "7295",
+      "0132",
+      "1082",
+      "2246",
+      "3541",
+      "4589",
+      "7049",
+      "7696",
+      "8621",
+      "9196",
+      "9295",
+      "0668",
+      "1222",
+      "2473",
+      "3548",
+      "5050",
+      "7169",
+      "7832",
+      "8889",
+      "9235",
+      "0829",
+      "1336",
+      "2585",
+      "3754",
+      "5380",
+      "7295",
+      "0132",
+      "1082",
+      "2246",
+      "3541",
+      "4589",
+      "7049",
+      "7696",
+      "8621",
+      "9196",
+      "9295",
+      "0668",
+      "1222",
+      "2473",
+      "3548",
+      "5050",
+      "7169",
+      "7832",
+      "8889",
+      "9235",
+      "0829",
+      "1336",
+      "2585",
+      "3754",
+      "5380",
+      "7295",
+      "0132",
+      "1082",
+      "2246",
+      "3541",
+      "4589",
+      "7049",
+      "7696",
+      "8621",
+      "9196",
+      "9295",
+      "0668",
+      "1222",
+      "2473",
+      "3548",
+      "5050",
+      "7169",
+      "7832",
+      "8889",
+      "9235",
+      "0829",
+      "1336",
+      "2585",
+      "3754",
+      "5380",
+      "7295",
+    ],
+  },
 ];
 
 const getCurrentDate = () => {
@@ -123,8 +282,7 @@ export default function Home() {
       ...generatePrizeData("secondPrize", 10),
       ...generatePrizeData("thirdPrize", 10),
       ...generatePrizeData("fourthPrize", 10),
-      ...generatePrizeData("fifthPrize", 10),
-      ...generatePrizeData("sixthPrize", 100), // Adjust count if needed
+      ...generatePrizeData("fifthPrize", 100),
     });
 
     setPopupOpen(!popupOpen);
@@ -140,6 +298,9 @@ export default function Home() {
   const handleCancelDelete = () => {
     setIsDeletePopupOpen(!isDeletePopupOpen);
   };
+
+  // Function to download PDF (only for desktop view)
+  const downloadPDF = () => {};
 
   return (
     <>
@@ -353,7 +514,7 @@ export default function Home() {
 
               <h3 className="text-xl font-bold mb-4">5th Prizes</h3>
               <div className="grid grid-cols-5 gap-4">
-                {tenInputs.map((num) => (
+                {hundredInputs.map((num) => (
                   <input
                     key={num}
                     type="number"
@@ -361,23 +522,6 @@ export default function Home() {
                     placeholder={`${num}`}
                     onChange={handleInputChange}
                     value={inputData[`fifthPrize${num}`] || ""}
-                    className={
-                      "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                    }
-                  />
-                ))}
-              </div>
-
-              <h3 className="text-xl font-bold mb-4">6th Prizes</h3>
-              <div className="grid grid-cols-5 gap-4">
-                {hundredInputs.map((num) => (
-                  <input
-                    key={num}
-                    type="number"
-                    name={`sixthPrize${num}`}
-                    placeholder={`${num}`}
-                    onChange={handleInputChange}
-                    value={inputData[`sixthPrize${num}`] || ""}
                     className={
                       "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
@@ -405,27 +549,62 @@ export default function Home() {
       )}
 
       {showWinners && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white text-gray-900 p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center bg-blue-600 text-white p-4 rounded-t-lg">
-              <h2 className="text-xl font-bold">Result Details</h2>
-              <IoMdClose
-                className="cursor-pointer text-xl"
-                onClick={handleShowWinners}
-              />
-            </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-8 overflow-auto">
+          <div className="a4-page bg-white relative">
+            <main>
+              <div className="absolute top-4 right-4 flex space-x-2">
+                <button
+                  className="cursor-pointer text-xl"
+                  onClick={downloadPDF}
+                >
+                  <IoMdDownload />
+                </button>
 
-            <div className="p-4 space-y-4">
-              <h3 className="text-lg font-semibold">RESULT - 1</h3>
-              <p>Date: 2024-09-11</p>
-              <p>Session: MOR</p>
-
-              <div className="flex justify-center mt-6">
-                <button className="px-8 py-2 text-sm text-white bg-blue-500 rounded hover:bg-blue-600">
-                  Download PDF
+                <button
+                  className="cursor-pointer text-xl"
+                  onClick={handleShowWinners}
+                >
+                  <IoMdClose />
                 </button>
               </div>
-            </div>
+
+              <div className="bg-gray-50 h-52 text-center p-8">
+                <h1 className="text-xl font-bold">LMS STATE LOTTERIES</h1>
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  <p className="mt-1">19/03/2023</p>
+                  <p>Morning</p>
+                  <p>Sunday</p>
+                </div>
+              </div>
+
+              <div className="p-8 text-center">
+                {prizeData.map((prize, index) => (
+                  <div key={index} className="mb-6">
+                    <h3 className="text-lg font-bold">{prize.prize}</h3>
+
+                    {/* Conditional rendering for single number or grid */}
+                    {prize.numbers.length === 1 ? (
+                      <div className="mt-4 flex justify-center">
+                        <span className="text-sm p-2 bg-gray-100 rounded">
+                          {prize.numbers[0]}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-10 gap-2 mt-4">
+                        {prize.numbers.map((number, numberIndex) => (
+                          <span
+                            key={numberIndex}
+                            className="text-sm p-1 bg-gray-100 rounded"
+                          >
+                            {number}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </main>
           </div>
         </div>
       )}
