@@ -11,31 +11,31 @@ export default function SalesList({
   handleGeneratePDF,
 }) {
   return (
-    <div className="px-2 sm:ml-64">
+    <>
       <div className="p-4 mt-4 mb-2 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
         <form className="w-full">
           <div className="flex flex-wrap items-center gap-4">
             {/* Date Inputs */}
             <input
               type="date"
-              className="px-4 py-1 border border-gray-300 rounded-lg bg-white text-black focus:ring-blue-500 focus:border-blue-500 min-w-[230px] w-full sm:w-auto"
+              className="px-4 py-1 border border-gray-300 rounded-lg bg-white text-black focus:ring-blue-500 focus:border-blue-500 min-w-[220px] w-full sm:w-auto"
             />
             <input
               type="date"
-              className="px-4 py-1 border border-gray-300 rounded-lg bg-white text-black focus:ring-blue-500 focus:border-blue-500 min-w-[230px] w-full sm:w-auto"
+              className="px-4 py-1 border border-gray-300 rounded-lg bg-white text-black focus:ring-blue-500 focus:border-blue-500 min-w-[220px] w-full sm:w-auto"
             />
 
             {/* Selects */}
-            <select className="px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white text-black focus:ring-blue-500 focus:border-blue-500 min-w-[230px] w-full sm:w-auto">
+            <select className="px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white text-black focus:ring-blue-500 focus:border-blue-500 min-w-[220px] w-full sm:w-auto">
               <option>S BASAK</option>
             </select>
 
-            <select className="px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white text-black focus:ring-blue-500 focus:border-blue-500 min-w-[230px] w-full sm:w-auto">
+            <select className="px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white text-black focus:ring-blue-500 focus:border-blue-500 min-w-[220px] w-full sm:w-auto">
               <option>ALL</option>
             </select>
 
             {/* Submit Button */}
-            <button className="px-6 py-2 bg-gray-100 text-gray-700 border text-base rounded-lg focus:ring-4 w-full sm:w-auto">
+            <button className="px-6 py-1.5 bg-gray-100 text-gray-700 border text-base rounded-lg focus:ring-4 w-full sm:w-auto">
               Search
             </button>
           </div>
@@ -136,6 +136,6 @@ export default function SalesList({
           </table>
         </div>
       </div>
-    </div>
+    </>
   );
 }

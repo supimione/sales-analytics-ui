@@ -1,9 +1,7 @@
 "use client"; // Required for UI manipulation or using any React hook
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DeletePopup from "@/components/DeletePopup";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { IoMdClose, IoMdDownload } from "react-icons/io";
 import { MdDelete, MdEditDocument } from "react-icons/md";
 
@@ -303,84 +301,80 @@ export default function Home() {
   const downloadPDF = () => {};
 
   return (
-    <>
-      <div className="py-4 px-2 sm:ml-64">
-        <div className="flex justify-between items-center mt-14">
-          <div className="flex items-center">
-            <h1 className="text-xl font-bold">Winning</h1>
-          </div>
-          <button
-            className="mb-4 px-4 py-2 text-sm text-white bg-[#597cff] rounded hover:bg-sky-700"
-            onClick={handleOpenPopup}
-          >
-            + Add Winning
-          </button>
-        </div>
+    <div className="p-3">
+      <div className="flex justify-between items-center">
+        <h1 className="text-xl font-bold">Winning</h1>
+        <button
+          className="px-4 py-2 text-sm text-white bg-[#597cff] rounded hover:bg-sky-700"
+          onClick={handleOpenPopup}
+        >
+          + Add Winning
+        </button>
+      </div>
 
-        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-6">
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  {ticketTableHeader.map((item) => (
-                    <th scope="col" className="px-6 py-3" key={item}>
-                      {item}
+      <div className="p-4 mt-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                {ticketTableHeader.map((item) => (
+                  <th scope="col" className="px-6 py-3" key={item}>
+                    {item}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            {ticketGridData?.length > 0 ? (
+              <tbody>
+                {ticketGridData.map((item, index) => (
+                  <tr
+                    key={item.id}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    >
+                      {index + 1}
                     </th>
-                  ))}
-                </tr>
-              </thead>
-              {ticketGridData?.length > 0 ? (
-                <tbody>
-                  {ticketGridData.map((item, index) => (
-                    <tr
-                      key={item.id}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        {index + 1}
-                      </th>
-                      <td
-                        className="px-6 py-4 text-blue-500 underline cursor-pointer"
-                        onClick={handleShowWinners}
-                      >
-                        RESULT {index + 1}
-                      </td>
-                      <td className="px-6 py-4">{item.day}</td>
-                      <td className="px-6 py-4">{item.date}</td>
-                      <td className="px-6 py-4">{item.lotteryName}</td>
-                      <td className="px-6 py-4">{item.session}</td>
-                      <td className="px-6 py-4 flex space-x-2">
-                        <MdEditDocument
-                          className="text-blue-500 cursor-pointer text-xl hover:text-blue-700"
-                          onClick={() => handleEditTicketPrize(item)}
-                        />
-                        <MdDelete
-                          className="text-red-500 cursor-pointer text-xl hover:text-red-700"
-                          onClick={() => handleDeleteClick(item.id)}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              ) : (
-                <tbody>
-                  <tr>
                     <td
-                      colSpan="8" // Adjust this number based on the number of columns in your table
-                      className="text-center p-6"
+                      className="px-6 py-4 text-blue-500 underline cursor-pointer"
+                      onClick={handleShowWinners}
                     >
-                      <div className="text-gray-500 dark:text-gray-400 text-base">
-                        No Data Found
-                      </div>
+                      RESULT {index + 1}
+                    </td>
+                    <td className="px-6 py-4">{item.day}</td>
+                    <td className="px-6 py-4">{item.date}</td>
+                    <td className="px-6 py-4">{item.lotteryName}</td>
+                    <td className="px-6 py-4">{item.session}</td>
+                    <td className="px-6 py-4 flex space-x-2">
+                      <MdEditDocument
+                        className="text-blue-500 cursor-pointer text-xl hover:text-blue-700"
+                        onClick={() => handleEditTicketPrize(item)}
+                      />
+                      <MdDelete
+                        className="text-red-500 cursor-pointer text-xl hover:text-red-700"
+                        onClick={() => handleDeleteClick(item.id)}
+                      />
                     </td>
                   </tr>
-                </tbody>
-              )}
-            </table>
-          </div>
+                ))}
+              </tbody>
+            ) : (
+              <tbody>
+                <tr>
+                  <td
+                    colSpan="8" // Adjust this number based on the number of columns in your table
+                    className="text-center p-6"
+                  >
+                    <div className="text-gray-500 dark:text-gray-400 text-base">
+                      No Data Found
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            )}
+          </table>
         </div>
       </div>
 
@@ -610,12 +604,8 @@ export default function Home() {
       )}
 
       {isDeletePopupOpen && (
-        <DeletePopup
-          isOpen={isDeletePopupOpen}
-          onClose={handleCancelDelete}
-          // onConfirm={}
-        />
+        <DeletePopup isOpen={isDeletePopupOpen} onClose={handleCancelDelete} />
       )}
-    </>
+    </div>
   );
 }

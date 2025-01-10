@@ -1,67 +1,36 @@
 "use client"; // Required for UI manipulation or using any React hook
 
 import { useState } from "react";
-import DeletePopup from "@/components/DeletePopup";
-import CreateSalePopup from "@/components/CreateSalePopup";
+import PageHeader from "@/components/PageHeader";
 import SalesList from "@/components/SalesList";
+import CreateSalePopup from "@/components/CreateSalePopup";
+import DeletePopup from "@/components/DeletePopup";
 
 export default function Home() {
   const [isPopupOpen, setPopupOpen] = useState(false);
+  console.log(isPopupOpen, "isPopupOpen");
+
   const [isDeletePopupOpen, setDeletePopupOpen] = useState(false);
 
-  const handleOpenPopup = () => {
+  const handleAddPopup = () => {
     setPopupOpen(!isPopupOpen);
   };
 
-  // Open delete confirmation popup
-  const handleDeleteSelectedItems = (itemId) => {
-    setDeletePopupOpen(true);
-  };
-
-  // Close delete popup
-  const handleCancelDelete = () => {
-    setDeletePopupOpen(false);
-  };
-
   return (
-    <>
-      <div className="py-4 px-2 sm:ml-64">
-        <div className="flex justify-between items-center mt-14">
-          <div className="flex items-center">
-            <h1 className="text-xl font-bold">Ticket Sale List</h1>
-          </div>
-          <button
-            className="px-4 py-2 text-sm text-white bg-[#597cff] rounded hover:bg-sky-700"
-            onClick={handleOpenPopup}
-          >
-            + Add Sales
-          </button>
-        </div>
-      </div>
-
-      <SalesList
-        handleDeleteSelectedItems={handleDeleteSelectedItems}
-        // handleGenerateExcel={handleGenerateExcel}
-        // handleGeneratePDF={handleGeneratePDF}
+    <div className="p-3">
+      <PageHeader
+        pageTitle="Ticket Sale List"
+        buttonTitle="+ Add Sales"
+        handleAddPopup={handleAddPopup}
       />
 
+      <SalesList />
+
       {isPopupOpen && (
-        <CreateSalePopup
-          isOpen={isPopupOpen}
-          onClose={handleOpenPopup}
-          title="Add Ticket Sale"
-          okBtnText="Create Sale"
-          // handleSubmit={}
-        />
+        <CreateSalePopup title="Add Ticket Sale" okBtnText="Create Sale" />
       )}
 
-      {isDeletePopupOpen && (
-        <DeletePopup
-          isOpen={isDeletePopupOpen}
-          onClose={handleCancelDelete}
-          // onConfirm={handleConfirmDelete}
-        />
-      )}
-    </>
+      {isDeletePopupOpen && <DeletePopup />}
+    </div>
   );
 }

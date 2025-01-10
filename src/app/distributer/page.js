@@ -92,7 +92,7 @@ export default function Home() {
 
   return (
     <>
-      <div className={`py-4 px-2 sm:ml-64 ${isPopupOpen ? "blur-sm" : ""}`}>
+      <div className={`py-4 px-2  ${isPopupOpen ? "blur-sm" : ""}`}>
         {/* Header and Breadcrumb */}
         <div className="flex justify-between items-center mt-14">
           <div className="flex items-center">

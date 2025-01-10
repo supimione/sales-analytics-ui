@@ -1,4 +1,3 @@
-// components
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 
@@ -13,9 +12,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Header />
-        <Sidebar />
-        <main className="p-4">{children}</main>
+        <>
+          <Sidebar />
+          <Header />
+          <main className="ml-64 p-6 mt-10">
+            <div className="p-3 bg-white text-[rgba(58,53,65,0.87)] transition-shadow duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-md shadow-[0px_2px_10px_0px_rgba(58,53,65,0.1)]">
+              {children}
+            </div>
+          </main>
+        </>
       </body>
     </html>
   );

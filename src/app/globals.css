@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #e5e7eb;
   --foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: rgb(40, 36, 61);
     --foreground: #ededed;
   }
 }
@@ -18,17 +18,4 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
-.a4-page {
-  width: 21cm;
-  height: 29.7cm;
-  margin: auto;
-  border: 1px solid #ddd;
 }
