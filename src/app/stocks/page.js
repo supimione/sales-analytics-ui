@@ -24,7 +24,7 @@ export default function Home() {
   };
 
   return (
-    <div className="p-3">
+    <div className="p-5">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-bold">All Stocks</h1>
         <button
@@ -47,7 +47,11 @@ export default function Home() {
       )}
 
       {isDeletePopupOpen && (
-        <DeletePopup isOpen={isDeletePopupOpen} onClose={handleCancelDelete} />
+        <DeletePopup
+          handleOpenDeletePop={handleOpenDeletePop}
+          handleCancelDelete={handleCancelDelete}
+          handleConfirmDelete={handleConfirmDelete}
+        />
       )}
     </div>
   );

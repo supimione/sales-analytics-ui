@@ -1,4 +1,3 @@
-// components/Header.js
 "use client";
 
 import React from "react";
@@ -6,9 +5,9 @@ import { FaFileExcel, FaFilePdf } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
 export default function SalesList({
-  handleDeleteSelectedItems,
-  handleGenerateExcel,
-  handleGeneratePDF,
+  selectedItem,
+  generateExcel,
+  generatePDF,
 }) {
   return (
     <>
@@ -46,16 +45,16 @@ export default function SalesList({
         <div className="flex justify-between mb-4">
           <button
             className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md focus:outline-none flex items-center"
-            onClick={handleDeleteSelectedItems}
+            onClick={selectedItem}
           >
             <MdDelete />
           </button>
           <div className="flex justify-between ">
             <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-md focus:outline-none flex items-center mr-2">
-              <FaFileExcel onClick={handleGenerateExcel} />
+              <FaFileExcel onClick={generateExcel} />
             </button>
             <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md focus:outline-none flex items-center">
-              <FaFilePdf onClick={handleGeneratePDF} />
+              <FaFilePdf onClick={generatePDF} />
             </button>
           </div>
         </div>

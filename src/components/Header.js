@@ -5,14 +5,15 @@ import Link from "next/link";
 import Image from "next/image";
 import Admin from "@/images/user.png";
 import { IoMdSettings } from "react-icons/io";
-import { FaKey, FaSignOutAlt } from "react-icons/fa";
+import { FaKey, FaSignOutAlt, FaSun, FaMoon } from "react-icons/fa";
 
-export default function Header() {
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+export default function Header({ sidebarToggle }) {
   const dropdownRef = useRef(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false); // State for dark/light mode
 
   const toggleUserMenu = () => {
-    setIsUserMenuOpen((prev) => !prev);
+    setIsUserMenuOpen(!isUserMenuOpen);
   };
 
   const closeUserMenu = (e) => {
@@ -21,25 +22,35 @@ export default function Header() {
     }
   };
 
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
   useEffect(() => {
     if (isUserMenuOpen) {
       document.addEventListener("click", closeUserMenu);
     } else {
       document.removeEventListener("click", closeUserMenu);
     }
+
+    // Toggle dark mode class on the body
+    if (isDarkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+
     return () => document.removeEventListener("click", closeUserMenu);
-  }, [isUserMenuOpen]);
+  }, [isUserMenuOpen, isDarkMode]);
 
   return (
-    <nav className="fixed top-0 z-50 w-full">
+    <nav className="fixed top-0 w-full">
       <div className="px-6 py-3 flex items-center justify-between">
         <div className="flex items-center justify-start rtl:justify-end">
           <button
-            data-drawer-target="logo-sidebar"
-            data-drawer-toggle="logo-sidebar"
-            aria-controls="logo-sidebar"
             type="button"
-            className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            onClick={sidebarToggle}
+            className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg lg:hidden"
           >
             <svg
               className="w-6 h-6"
@@ -57,16 +68,32 @@ export default function Header() {
           </button>
         </div>
 
-        <div className="relative">
-          <Image
-            className="w-9 h-9 rounded-full cursor-pointer"
-            onClick={toggleUserMenu}
-            src={Admin}
-            alt=""
-          />
-          <span className="absolute bottom-0 left-7 w-3 h-3 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
+        {/* Dark/Light mode toggle button */}
+        <div className="flex">
+          <button
+            onClick={toggleDarkMode}
+            className="p-2 text-gray-600 dark:text-gray-200 mt-0.5 mr-3" // Added margin-right (gap)
+          >
+            {isDarkMode ? (
+              <FaSun className="w-5 h-5" />
+            ) : (
+              <FaMoon className="w-5 h-5" />
+            )}
+          </button>
+
+          {/* User profile avatar and menu */}
+          <div className="relative">
+            <Image
+              className="w-9 h-9 rounded-full cursor-pointer"
+              onClick={toggleUserMenu}
+              src={Admin}
+              alt="Admin Avatar"
+            />
+            <span className="absolute bottom-0 left-7 w-3 h-3 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
+          </div>
         </div>
 
+        {/* User menu dropdown */}
         <div
           ref={dropdownRef}
           className={`absolute right-6 top-14 w-48 bg-white divide-y divide-gray-100 rounded shadow-lg dark:bg-gray-700 dark:divide-gray-600 transform transition-transform duration-300 ${

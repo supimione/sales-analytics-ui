@@ -6,10 +6,10 @@ import { IoMdClose } from "react-icons/io";
 
 export default function CreateSalePopup({
   isOpen,
-  onClose,
   title,
-  okBtnText,
-  handleSubmit,
+  buttonTitle,
+  cancel,
+  create,
 }) {
   if (!isOpen) return null;
 
@@ -18,7 +18,7 @@ export default function CreateSalePopup({
       <div className="bg-white text-gray-900 p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center bg-blue-600 text-white p-4 rounded-t-lg">
           <h2 className="text-xl font-bold">{title}</h2>
-          <IoMdClose onClick={onClose} className="cursor-pointer text-xl" />
+          <IoMdClose onClick={cancel} className="cursor-pointer text-xl" />
         </div>
 
         <div className="p-4 space-y-4">
@@ -133,16 +133,16 @@ export default function CreateSalePopup({
 
         <div className="flex justify-end bg-gray-100 p-4 rounded-b-lg space-x-2">
           <button
-            onClick={onClose}
+            onClick={cancel}
             className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100"
           >
             Cancel
           </button>
           <button
             className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
-            onClick={handleSubmit}
+            onClick={create}
           >
-            {okBtnText}
+            {buttonTitle}
           </button>
         </div>
       </div>

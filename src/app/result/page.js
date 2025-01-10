@@ -301,7 +301,7 @@ export default function Home() {
   const downloadPDF = () => {};
 
   return (
-    <div className="p-3">
+    <div className="p-5">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-bold">Winning</h1>
         <button

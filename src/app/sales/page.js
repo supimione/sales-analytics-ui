@@ -7,30 +7,53 @@ import CreateSalePopup from "@/components/CreateSalePopup";
 import DeletePopup from "@/components/DeletePopup";
 
 export default function Home() {
-  const [isPopupOpen, setPopupOpen] = useState(false);
-  console.log(isPopupOpen, "isPopupOpen");
-
-  const [isDeletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [addPopupOpen, setAddPopupOpen] = useState(false);
+  const [selectItem, setSelectItem] = useState([]);
+  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
 
   const handleAddPopup = () => {
-    setPopupOpen(!isPopupOpen);
+    setAddPopupOpen(!addPopupOpen);
+  };
+
+  const handleSelectedItem = (items) => {
+    setSelectItem(items);
+  };
+
+  const handleDeletePopup = () => {
+    setDeletePopupOpen(!deletePopupOpen);
   };
 
   return (
-    <div className="p-3">
+    <div className="p-5">
       <PageHeader
-        pageTitle="Ticket Sale List"
+        title="Ticket Sale List"
         buttonTitle="+ Add Sales"
-        handleAddPopup={handleAddPopup}
+        add={handleAddPopup}
       />
 
-      <SalesList />
+      <SalesList
+        selectedItem={handleSelectedItem}
+        // generateExcel={handleGenerateExcel}
+        // generatePDF={handleGeneratePDF}
+      />
 
-      {isPopupOpen && (
-        <CreateSalePopup title="Add Ticket Sale" okBtnText="Create Sale" />
+      {addPopupOpen && (
+        <CreateSalePopup
+          isOpen={addPopupOpen}
+          cancel={handleAddPopup}
+          // create={handleCreate}
+          title="Add Ticket Sale"
+          buttonTitle="Create Sale"
+        />
       )}
 
-      {isDeletePopupOpen && <DeletePopup />}
+      {deletePopupOpen && (
+        <DeletePopup
+          isOpen={deletePopupOpen}
+          cancel={handleDeletePopup}
+          // confirm={handleDelete}
+        />
+      )}
     </div>
   );
 }

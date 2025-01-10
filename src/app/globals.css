@@ -19,3 +19,6 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+.main-min-height {
+  min-height: calc(100vh - 85px);
+}

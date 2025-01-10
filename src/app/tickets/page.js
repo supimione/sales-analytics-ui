@@ -31,7 +31,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="py-4 px-2 ">
+      <div className="py-4 px-2">
         <div className="flex justify-between items-center mt-14">
           <div className="flex items-center">
             <h1 className="text-xl font-bold">Tickets</h1>

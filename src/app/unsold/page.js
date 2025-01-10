@@ -1,53 +1,44 @@
 "use client"; // Required for UI manipulation or using any React hook
 
 import { useState } from "react";
+import PageHeader from "@/components/PageHeader";
 import SalesList from "@/components/SalesList";
 import CreateSalePopup from "@/components/CreateSalePopup";
 import DeletePopup from "@/components/DeletePopup";
 
 export default function Home() {
-  const [isPopupOpen, setPopupOpen] = useState(false);
-  const [isDeletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [addPopupOpen, setAddPopupOpen] = useState(false);
+  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
 
-  const handleOpenPopup = () => {
-    setPopupOpen(!isPopupOpen);
+  const handleOpenAddPopup = () => {
+    setAddPopupOpen(!addPopupOpen);
   };
 
-  // Open delete confirmation popup
-  const handleDeleteSelectedItems = (itemId) => {
-    setDeletePopupOpen(true);
-  };
-
-  // Close delete popup
   const handleCancelDelete = () => {
     setDeletePopupOpen(false);
   };
 
   return (
-    <div className="p-3">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold">Unsold List</h1>
-        <button
-          className="px-4 py-2 text-sm text-white bg-[#597cff] rounded hover:bg-sky-700"
-          onClick={handleOpenPopup}
-        >
-          + Add Unsold Item
-        </button>
-      </div>
+    <div className="p-5">
+      <PageHeader
+        pageTitle="Unsold List"
+        buttonTitle=" + Add Unsold Item"
+        handleAdd={handleOpenAddPopup}
+      />
 
-      <SalesList handleDeleteSelectedItems={handleDeleteSelectedItems} />
+      <SalesList />
 
-      {isPopupOpen && (
+      {addPopupOpen && (
         <CreateSalePopup
-          isOpen={isPopupOpen}
-          onClose={handleOpenPopup}
+          isOpen={addPopupOpen}
+          onClose={handleOpenAddPopup}
           title="Add Unsold Item"
           okBtnText="Submit"
         />
       )}
 
-      {isDeletePopupOpen && (
-        <DeletePopup isOpen={isDeletePopupOpen} onClose={handleCancelDelete} />
+      {deletePopupOpen && (
+        <DeletePopup isOpen={deletePopupOpen} onClose={handleOpenDeletePop} />
       )}
     </div>
   );
