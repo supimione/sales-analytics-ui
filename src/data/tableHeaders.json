@@ -1,0 +1,13 @@
+{
+  "distributor": [
+    "Sl No.",
+    "Name",
+    "Company Name",
+    "Username",
+    "Phone",
+    "Address",
+    "Session",
+    "Action"
+  ],
+  "ticket": ["Sl No.", "Ticket Name", "Action"]
+}

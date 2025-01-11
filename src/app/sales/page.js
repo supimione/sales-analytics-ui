@@ -1,4 +1,4 @@
-"use client"; // Required for UI manipulation or using any React hook
+"use client";
 
 import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
@@ -31,28 +31,19 @@ export default function Home() {
         add={handleAddPopup}
       />
 
-      <SalesList
-        selectedItem={handleSelectedItem}
-        // generateExcel={handleGenerateExcel}
-        // generatePDF={handleGeneratePDF}
-      />
+      <SalesList selectedItem={handleSelectedItem} />
 
       {addPopupOpen && (
         <CreateSalePopup
           isOpen={addPopupOpen}
           cancel={handleAddPopup}
-          // create={handleCreate}
           title="Add Ticket Sale"
           buttonTitle="Create Sale"
         />
       )}
 
       {deletePopupOpen && (
-        <DeletePopup
-          isOpen={deletePopupOpen}
-          cancel={handleDeletePopup}
-          // confirm={handleDelete}
-        />
+        <DeletePopup isOpen={deletePopupOpen} cancel={handleDeletePopup} />
       )}
     </div>
   );
