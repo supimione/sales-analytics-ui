@@ -1,19 +1,15 @@
-"use client"; // Required for UI manipulation or using any React hook
+"use client";
 
 import { useState } from "react";
+
+//components
+import PageHeader from "@/components/PageHeader";
 import DeletePopup from "@/components/DeletePopup";
+import masterData from "@/data/masterData.json";
+
+//react-icons
 import { IoMdClose, IoMdDownload } from "react-icons/io";
 import { MdDelete, MdEditDocument } from "react-icons/md";
-
-const ticketTableHeader = [
-  "Sl No.",
-  "Result Ref No.",
-  "Day",
-  "Date",
-  "Lottery Name",
-  "Sessions",
-  "Action",
-];
 
 const prizeData = [
   {
@@ -197,6 +193,7 @@ export default function Home() {
   const [showWinners, setShowWinners] = useState(false);
   const [update, setUpdate] = useState(false);
   const [ticketGridData, setTicketGridData] = useState([]);
+  console.log(ticketGridData, "ticketGridData");
 
   const tenInputs = Array.from({ length: 10 }, (_, i) => i + 1); // Create an array of numbers 1 to 10
   const hundredInputs = Array.from({ length: 100 }, (_, i) => i + 1); // Create an array of numbers 1 to 100
@@ -244,10 +241,6 @@ export default function Home() {
       ...dropdownData,
       ...inputData,
     };
-
-    console.log("Dropdown Data:", dropdownData);
-    console.log("Input Data:", inputData);
-    console.log("Combined Data:", combinedData);
 
     // Assuming ticketGridData is an array and you want to add the new combined data to it
     setTicketGridData((prevData) => [...prevData, combinedData]);
@@ -298,26 +291,22 @@ export default function Home() {
   };
 
   // Function to download PDF (only for desktop view)
-  const downloadPDF = () => {};
+  const handleDownloadPDF = () => {};
 
   return (
     <div className="p-5">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold">Winning</h1>
-        <button
-          className="px-4 py-2 text-sm text-white bg-[#597cff] rounded hover:bg-sky-700"
-          onClick={handleOpenPopup}
-        >
-          + Add Winning
-        </button>
-      </div>
+      <PageHeader
+        title="Winning"
+        buttonTitle="+ Add Winning"
+        add={handleOpenPopup}
+      />
 
       <div className="p-4 mt-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                {ticketTableHeader.map((item) => (
+                {masterData.tableHeader.result.map((item) => (
                   <th scope="col" className="px-6 py-3" key={item}>
                     {item}
                   </th>
@@ -341,9 +330,8 @@ export default function Home() {
                       className="px-6 py-4 text-blue-500 underline cursor-pointer"
                       onClick={handleShowWinners}
                     >
-                      RESULT {index + 1}
+                      Email
                     </td>
-                    <td className="px-6 py-4">{item.day}</td>
                     <td className="px-6 py-4">{item.date}</td>
                     <td className="px-6 py-4">{item.lotteryName}</td>
                     <td className="px-6 py-4">{item.session}</td>
@@ -392,10 +380,6 @@ export default function Home() {
             </div>
 
             <div className="p-4 space-y-4">
-              <p className="mb-4 text-sm">
-                The field labels marked with * are required input fields.
-              </p>
-
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block mb-2 text-sm font-medium">
@@ -543,62 +527,66 @@ export default function Home() {
       )}
 
       {showWinners && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-8 overflow-auto">
-          <div className="a4-page bg-white relative">
-            <main>
-              <div className="absolute top-4 right-4 flex space-x-2">
-                <button
-                  className="cursor-pointer text-xl"
-                  onClick={downloadPDF}
-                >
-                  <IoMdDownload />
-                </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white text-gray-900 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
+            {/* Close and Download Buttons */}
+            <div className="absolute top-4 right-4 flex space-x-2">
+              <button
+                className="cursor-pointer text-xl"
+                onClick={handleDownloadPDF}
+              >
+                <IoMdDownload />
+              </button>
 
-                <button
-                  className="cursor-pointer text-xl"
-                  onClick={handleShowWinners}
-                >
-                  <IoMdClose />
-                </button>
+              <button
+                className="cursor-pointer text-xl"
+                onClick={handleShowWinners}
+              >
+                <IoMdClose />
+              </button>
+            </div>
+
+            {/* Header */}
+            <div className="bg-gray-50 text-center p-8 flex flex-col items-center justify-center">
+              <h1 className="text-3xl font-bold">LMS STATE LOTTERIES</h1>
+              <div className="text-xl font-extrabold mt-4">
+                <p>
+                  {dropdownData.session} RESULT {dropdownData.date}
+                </p>
+                <p className="bg-amber-300 max-w-32 mx-auto mt-2 rounded">
+                  11:55 AM
+                </p>
               </div>
+            </div>
 
-              <div className="bg-gray-50 h-52 text-center p-8">
-                <h1 className="text-xl font-bold">LMS STATE LOTTERIES</h1>
-                <div className="grid grid-cols-3 gap-4 mt-4">
-                  <p className="mt-1">19/03/2023</p>
-                  <p>Morning</p>
-                  <p>Sunday</p>
-                </div>
-              </div>
+            {/* Prize Data */}
+            <div className="text-center p-6">
+              {prizeData.map((prize, index) => (
+                <div key={index} className="mb-6 last:mb-0">
+                  <h3 className="text-lg font-bold">{prize.prize}</h3>
 
-              <div className="p-8 text-center">
-                {prizeData.map((prize, index) => (
-                  <div key={index} className="mb-6">
-                    <h3 className="text-lg font-bold">{prize.prize}</h3>
-
-                    {/* Conditional rendering for single number or grid */}
-                    {prize.numbers.length === 1 ? (
-                      <div className="mt-4 flex justify-center">
-                        <span className="text-sm p-2 bg-gray-100 rounded">
-                          {prize.numbers[0]}
+                  {/* Conditional rendering for single number or grid of numbers */}
+                  {prize.numbers.length === 1 ? (
+                    <div className="mt-4 flex justify-center">
+                      <span className="text-sm p-2 bg-gray-100 rounded">
+                        {prize.numbers[0]}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-10 gap-2 mt-4">
+                      {prize.numbers.map((number, numberIndex) => (
+                        <span
+                          key={numberIndex}
+                          className="text-sm p-1 bg-gray-100 rounded"
+                        >
+                          {number}
                         </span>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-10 gap-2 mt-4">
-                        {prize.numbers.map((number, numberIndex) => (
-                          <span
-                            key={numberIndex}
-                            className="text-sm p-1 bg-gray-100 rounded"
-                          >
-                            {number}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </main>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

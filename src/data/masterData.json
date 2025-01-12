@@ -1,0 +1,35 @@
+{
+  "masterDropdown": {
+    "daysOfWeek": [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ]
+  },
+
+  "tableHeader": {
+    "distributor": [
+      "Sl No.",
+      "Name",
+      "Company Name",
+      "Username",
+      "Phone",
+      "Address",
+      "Session",
+      "Action"
+    ],
+    "ticket": ["Sl No.", "Ticket Name", "Action"],
+    "result": [
+      "Sl No.",
+      "Result Ref No.",
+      "Date",
+      "Lottery Name",
+      "Sessions",
+      "Action"
+    ]
+  }
+}

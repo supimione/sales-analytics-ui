@@ -1,11 +1,16 @@
 "use client";
 
 import { useState } from "react";
+
+//COMPONENTS
 import PageHeader from "@/components/PageHeader";
 import Table from "@/components/Table";
-import tableHeaders from "@/data/tableHeaders.json";
 import Modal from "@/components/Modal"; // import the Modal component
-import { FaTicketAlt, FaUser } from "react-icons/fa"; //react-icons
+import DeletePopup from "@/components/DeletePopup"; // Import the DeletePopup component
+import masterData from "@/data/masterData.json";
+
+//react-icons
+import { FaTicketAlt, FaUser } from "react-icons/fa";
 
 const tabData = [
   { title: "distributer", icon: FaUser },
@@ -15,11 +20,15 @@ const tabData = [
 export default function Home() {
   const [tabName, setTabName] = useState("distributer"); // Default tab
   const [distributerPopup, setDistributerPopup] = useState(false); // add distributer popup
-  const [distributorData, setDistributorData] = useState([]);
   const [ticketPopup, setTicketPopup] = useState(false); // add ticket popup
-  const [ticketData, setTicketData] = useState([]);
   const [password, setPassWord] = useState("");
-
+  const [distributorData, setDistributorData] = useState([]);
+  const [ticketData, setTicketData] = useState([]);
+  const [showDeletePopup, setShowDeletePopup] = useState(false); // State for showing the delete confirmation popup
+  const [deletingItemId, setDeletingItemId] = useState(null); // ID of the distributor or ticket being deleted
+  const [deletingItemType, setDeletingItemType] = useState(""); // Type of item ("distributer" or "ticket")
+  const [editingDistributorId, setEditingDistributorId] = useState(null); // Track the distributor being edited
+  const [editingTicketId, setEditingTicketId] = useState(null); // Track the ticket being edited
   const [distributorForm, setDistributorForm] = useState({
     name: "",
     companyName: "",
@@ -28,68 +37,89 @@ export default function Home() {
     address: "",
     session: "",
   });
-
   const [ticketForm, setTicketForm] = useState({
     ticketName: "",
   });
 
-  const [editingDistributorId, setEditingDistributorId] = useState(null); // Track the distributor being edited
-  const [editingTicketId, setEditingTicketId] = useState(null); // Track the ticket being edited
+  const handleTabChange = (tab) => setTabName(tab);
 
-  const handleTabChange = (tab) => {
-    setTabName(tab);
-  };
-
-  const handleDistributerPopup = () => {
-    setDistributerPopup(!distributerPopup);
-    if (!distributerPopup) {
-      // Reset form and editing state when opening the modal for new entries
-      setDistributorForm({
-        name: "",
-        companyName: "",
-        username: "",
-        phone: "",
-        address: "",
-        session: "",
-      });
-      setPassWord("");
-      setEditingDistributorId(null); // Clear the editing ID
+  const handlePopup = (type) => {
+    if (type === "distributer") {
+      setDistributerPopup(!distributerPopup);
+      if (!distributerPopup) {
+        resetDistributorForm();
+      }
+    } else if (type === "ticket") {
+      setTicketPopup(!ticketPopup);
+      if (!ticketPopup) {
+        resetTicketForm();
+      }
     }
   };
 
-  const handleTicketPopup = () => {
-    setTicketPopup(!ticketPopup);
-    if (!ticketPopup) {
-      // Reset form and editing state when opening the modal for new tickets
-      setTicketForm({
-        ticketName: "",
-      });
-      setEditingTicketId(null); // Clear the editing ID
-    }
+  const resetDistributorForm = () => {
+    setDistributorForm({
+      name: "",
+      companyName: "",
+      username: "",
+      phone: "",
+      address: "",
+      session: "",
+    });
+    setPassWord("");
+    setEditingDistributorId(null);
+  };
+
+  const resetTicketForm = () => {
+    setTicketForm({
+      ticketName: "",
+    });
+    setEditingTicketId(null);
   };
 
   // Handle form input change for distributor
-  const handleDistributorInputChange = (e) => {
+  const handleInputChange = (e, formType) => {
     const { name, value } = e.target;
-    setDistributorForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (formType === "distributer") {
+      setDistributorForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    } else if (formType === "ticket") {
+      setTicketForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
-  // Handle form input change for ticket
-  const handleTicketInputChange = (e) => {
-    const { name, value } = e.target;
-    setTicketForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Handle distributor form submission
-  const handleSubmitDistributer = (e) => {
+  // Handle form submission for distributor
+  const handleSubmitForm = (e, type) => {
     e.preventDefault();
+    if (type === "distributer") {
+      if (validateDistributorForm()) {
+        if (editingDistributorId) {
+          updateDistributor();
+        } else {
+          addDistributor();
+        }
+        setDistributerPopup(false);
+      }
+    } else if (type === "ticket") {
+      if (ticketForm.ticketName) {
+        if (editingTicketId) {
+          updateTicket();
+        } else {
+          addTicket();
+        }
+        setTicketPopup(false);
+      } else {
+        alert("Please enter a ticket name.");
+      }
+    }
+  };
 
+  const validateDistributorForm = () => {
     if (
       !distributorForm.name ||
       !distributorForm.companyName ||
@@ -100,110 +130,89 @@ export default function Home() {
       !password
     ) {
       alert("Please fill in all fields.");
-      return;
+      return false;
     }
+    return true;
+  };
 
-    if (editingDistributorId) {
-      // Update the existing distributor
+  const addDistributor = () => {
+    setDistributorData((prevData) => [
+      ...prevData,
+      { ...distributorForm, id: new Date().getTime() }, // Use timestamp as unique ID
+    ]);
+  };
+
+  const updateDistributor = () => {
+    setDistributorData((prevData) =>
+      prevData.map((item) =>
+        item.id === editingDistributorId
+          ? { ...item, ...distributorForm }
+          : item
+      )
+    );
+  };
+
+  const addTicket = () => {
+    setTicketData((prevData) => [
+      ...prevData,
+      { ...ticketForm, id: new Date().getTime() }, // Use timestamp as unique ID
+    ]);
+  };
+
+  const updateTicket = () => {
+    setTicketData((prevData) =>
+      prevData.map((item) =>
+        item.id === editingTicketId ? { ...item, ...ticketForm } : item
+      )
+    );
+  };
+
+  const handleEdit = (id, type) => {
+    if (type === "distributer") {
+      const distributorToEdit = distributorData.find((item) => item.id === id);
+      if (distributorToEdit) {
+        setDistributorForm(distributorToEdit);
+        setEditingDistributorId(id);
+        setDistributerPopup(true);
+      }
+    } else if (type === "ticket") {
+      const ticketToEdit = ticketData.find((item) => item.id === id);
+      if (ticketToEdit) {
+        setTicketForm(ticketToEdit);
+        setEditingTicketId(id);
+        setTicketPopup(true);
+      }
+    }
+  };
+
+  const handleDelete = (id, type) => {
+    setDeletingItemId(id);
+    setDeletingItemType(type);
+    setShowDeletePopup(true);
+  };
+
+  const confirmDelete = () => {
+    if (deletingItemType === "distributer") {
       setDistributorData((prevData) =>
-        prevData.map((item) =>
-          item.id === editingDistributorId
-            ? { ...item, ...distributorForm } // Update the item with the form data
-            : item
-        )
+        prevData.filter((item) => item.id !== deletingItemId)
       );
-    } else {
-      // Add a new distributor if no item is being edited
-      setDistributorData((prevData) => [
-        ...prevData,
-        { ...distributorForm, id: new Date().getTime() }, // Use timestamp as unique ID
-      ]);
-    }
-
-    setDistributerPopup(false);
-    setDistributorForm({
-      name: "",
-      companyName: "",
-      username: "",
-      phone: "",
-      address: "",
-      session: "",
-    });
-    setPassWord("");
-    setEditingDistributorId(null); // Reset editing ID after submission
-  };
-
-  // Handle ticket form submission
-  const handleSubmitTicket = (e) => {
-    e.preventDefault();
-
-    if (!ticketForm.ticketName) {
-      alert("Please enter a ticket name.");
-      return;
-    }
-
-    if (editingTicketId) {
-      // Update the existing ticket
+    } else if (deletingItemType === "ticket") {
       setTicketData((prevData) =>
-        prevData.map((item) =>
-          item.id === editingTicketId
-            ? { ...item, ...ticketForm } // Update the item with the form data
-            : item
-        )
+        prevData.filter((item) => item.id !== deletingItemId)
       );
-    } else {
-      // Add a new ticket if no item is being edited
-      setTicketData((prevData) => [
-        ...prevData,
-        { ...ticketForm, id: new Date().getTime() }, // Use timestamp as unique ID
-      ]);
     }
-
-    setTicketPopup(false);
-    setTicketForm({
-      ticketName: "",
-    });
-    setEditingTicketId(null); // Reset editing ID after submission
+    setShowDeletePopup(false);
+    resetDeleteState();
   };
 
-  // Handle edit distributor
-  const handleEditDistributer = (id) => {
-    const distributorToEdit = distributorData.find((item) => item.id === id);
-    if (distributorToEdit) {
-      setDistributorForm({
-        name: distributorToEdit.name,
-        companyName: distributorToEdit.companyName,
-        username: distributorToEdit.username,
-        phone: distributorToEdit.phone,
-        address: distributorToEdit.address,
-        session: distributorToEdit.session,
-      });
-      setPassWord(""); // Password will remain blank to be re-entered
-      setEditingDistributorId(id); // Store the id of the item being edited
-      setDistributerPopup(true); // Open modal
-    }
+  const cancelDelete = () => {
+    setShowDeletePopup(false);
+    resetDeleteState();
   };
 
-  // Handle edit ticket
-  const handleEditTicket = (id) => {
-    const ticketToEdit = ticketData.find((item) => item.id === id);
-    if (ticketToEdit) {
-      setTicketForm({
-        ticketName: ticketToEdit.ticketName,
-      });
-      setEditingTicketId(id); // Store the id of the item being edited
-      setTicketPopup(true); // Open modal
-    }
-  };
-
-  // Handle delete distributor
-  const handleDeleteDistributer = (id) => {
-    setDistributorData((prevData) => prevData.filter((item) => item.id !== id));
-  };
-
-  // Handle delete ticket
-  const handleDeleteTicket = (id) => {
-    setTicketData((prevData) => prevData.filter((item) => item.id !== id));
+  const resetDeleteState = () => {
+    setDeletingItemId(null);
+    setDeletingItemType("");
   };
 
   return (
@@ -239,22 +248,22 @@ export default function Home() {
             <PageHeader
               title="Distributer Report"
               buttonTitle="+ Add Distributer"
-              add={handleDistributerPopup}
+              add={() => handlePopup("distributer")}
             />
 
             <Table
-              headers={tableHeaders.distributor}
+              headers={masterData.tableHeader.distributor}
               data={distributorData}
-              onEdit={handleEditDistributer}
-              onDelete={handleDeleteDistributer}
+              onEdit={(id) => handleEdit(id, "distributer")}
+              onDelete={(id) => handleDelete(id, "distributer")}
             />
 
             <Modal
               title="Add Distributor"
               isOpen={distributerPopup}
-              onClose={handleDistributerPopup}
+              onClose={() => handlePopup("distributer")}
             >
-              <form onSubmit={handleSubmitDistributer}>
+              <form onSubmit={(e) => handleSubmitForm(e, "distributer")}>
                 <p className="mb-4 text-xs text-rose-400">
                   The field labels marked with * are required input fields.
                 </p>
@@ -265,7 +274,7 @@ export default function Home() {
                       type="text"
                       name="name"
                       value={distributorForm.name}
-                      onChange={handleDistributorInputChange}
+                      onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -277,7 +286,7 @@ export default function Home() {
                       type="text"
                       name="companyName"
                       value={distributorForm.companyName}
-                      onChange={handleDistributorInputChange}
+                      onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -289,7 +298,7 @@ export default function Home() {
                       type="text"
                       name="phone"
                       value={distributorForm.phone}
-                      onChange={handleDistributorInputChange}
+                      onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -301,7 +310,7 @@ export default function Home() {
                       type="text"
                       name="address"
                       value={distributorForm.address}
-                      onChange={handleDistributorInputChange}
+                      onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -313,13 +322,13 @@ export default function Home() {
                       type="text"
                       name="session"
                       value={distributorForm.session}
-                      onChange={handleDistributorInputChange}
+                      onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
                 </div>
                 <p className="text-cyan-500 text-sm font-semibold mt-6 mb-3">
-                  Create the dealer credentials :
+                  Create the dealer credentials:
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div>
@@ -330,7 +339,7 @@ export default function Home() {
                       type="text"
                       name="username"
                       value={distributorForm.username}
-                      onChange={handleDistributorInputChange}
+                      onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -349,7 +358,7 @@ export default function Home() {
                 </div>
                 <div className="flex justify-end bg-gray-100 p-3 rounded-b-lg space-x-2">
                   <button
-                    onClick={handleDistributerPopup}
+                    onClick={() => handlePopup("distributer")}
                     className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100"
                   >
                     Cancel
@@ -363,6 +372,12 @@ export default function Home() {
                 </div>
               </form>
             </Modal>
+
+            <DeletePopup
+              isOpen={showDeletePopup}
+              cancel={cancelDelete}
+              confirm={confirmDelete}
+            />
           </>
         )}
 
@@ -371,22 +386,22 @@ export default function Home() {
             <PageHeader
               title="Tickets Report"
               buttonTitle="+ Add Tickets"
-              add={handleTicketPopup}
+              add={() => handlePopup("ticket")}
             />
 
             <Table
-              headers={tableHeaders.ticket}
+              headers={masterData.tableHeader.ticket}
               data={ticketData}
-              onEdit={handleEditTicket}
-              onDelete={handleDeleteTicket}
+              onEdit={(id) => handleEdit(id, "ticket")}
+              onDelete={(id) => handleDelete(id, "ticket")}
             />
 
             <Modal
               title="Add Ticket"
               isOpen={ticketPopup}
-              onClose={handleTicketPopup}
+              onClose={() => handlePopup("ticket")}
             >
-              <form onSubmit={handleSubmitTicket}>
+              <form onSubmit={(e) => handleSubmitForm(e, "ticket")}>
                 <p className="mb-4 text-xs text-rose-400">
                   The field labels marked with * are required input fields.
                 </p>
@@ -399,14 +414,14 @@ export default function Home() {
                       type="text"
                       name="ticketName"
                       value={ticketForm.ticketName}
-                      onChange={handleTicketInputChange}
+                      onChange={(e) => handleInputChange(e, "ticket")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
                 </div>
                 <div className="flex justify-end bg-gray-100 p-3 rounded-b-lg space-x-2">
                   <button
-                    onClick={handleTicketPopup}
+                    onClick={() => handlePopup("ticket")}
                     className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100"
                   >
                     Cancel
@@ -420,6 +435,12 @@ export default function Home() {
                 </div>
               </form>
             </Modal>
+
+            <DeletePopup
+              isOpen={showDeletePopup}
+              cancel={cancelDelete}
+              confirm={confirmDelete}
+            />
           </>
         )}
       </div>
