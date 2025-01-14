@@ -35,7 +35,7 @@ export default function SalesList({
           <div className="flex justify-between items-center mb-4">
             <select
               name="filter"
-              className="px-2 font-bold py-2 text-sm bg-white border border-gray-200 rounded-lg"
+              className="px-2 cursor-pointer font-bold py-2 text-sm bg-white border border-gray-200 rounded-lg"
             >
               {masterData.masterDropdown.filterData.map((status, index) => (
                 <option key={index} value={status}>

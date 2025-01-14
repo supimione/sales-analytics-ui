@@ -34,9 +34,18 @@ export default function Home() {
         id: 1,
         name: "Rahit Das",
         companyName: "Lottery Company",
-        username: "sumit123",
+        username: "rahit123",
         phone: "9933111222",
         address: "Murshidabad",
+        status: "Active",
+      },
+      {
+        id: 2,
+        name: "Suman Roy",
+        companyName: "Lottery Agency",
+        username: "suman123",
+        phone: "9932323232",
+        address: "Dhuliyan",
         status: "Active",
       },
     ]);
@@ -44,6 +53,11 @@ export default function Home() {
       {
         id: 1,
         ticketName: "DEAR",
+        status: "Active",
+      },
+      {
+        id: 2,
+        ticketName: "NAGALAND",
         status: "Active",
       },
     ]);
@@ -72,7 +86,6 @@ export default function Home() {
       username: "",
       phone: "",
       address: "",
-      session: "",
       status: "",
     });
     setPassWord("");
