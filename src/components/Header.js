@@ -10,7 +10,7 @@ import { FaKey, FaSignOutAlt, FaSun, FaMoon } from "react-icons/fa";
 export default function Header({ sidebarToggle }) {
   const dropdownRef = useRef(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false); // State for dark/light mode
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
@@ -44,7 +44,7 @@ export default function Header({ sidebarToggle }) {
   }, [isUserMenuOpen, isDarkMode]);
 
   return (
-    <nav className="fixed top-0 w-full">
+    <nav className="w-full">
       <div className="px-6 py-3 flex items-center justify-between">
         <div className="flex items-center justify-start rtl:justify-end">
           <button
@@ -96,7 +96,7 @@ export default function Header({ sidebarToggle }) {
         {/* User menu dropdown */}
         <div
           ref={dropdownRef}
-          className={`absolute right-6 top-14 w-48 bg-white divide-y divide-gray-100 rounded shadow-lg dark:bg-gray-700 dark:divide-gray-600 transform transition-transform duration-300 ${
+          className={`absolute right-6 top-14 w-48 z-40 bg-white divide-y divide-gray-100 rounded shadow-lg dark:bg-gray-700 dark:divide-gray-600 transform transition-transform duration-300 ${
             isUserMenuOpen
               ? "scale-100 opacity-100"
               : "scale-95 opacity-0 pointer-events-none"

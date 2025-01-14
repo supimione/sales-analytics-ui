@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { FaFileExcel } from "react-icons/fa";
 import { MdDelete, MdEditDocument } from "react-icons/md";
 import masterData from "@/data/masterData.json";
@@ -14,6 +14,20 @@ export default function SalesList({
   onEdit,
   onDelete,
 }) {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(tableData.length / itemsPerPage);
+
+  const currentItems = tableData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <>
       <div className="p-4 mt-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
@@ -52,9 +66,9 @@ export default function SalesList({
                 ))}
               </tr>
             </thead>
-            {tableData?.length > 0 ? (
+            {currentItems.length > 0 ? (
               <tbody>
-                {tableData.map((item, index) => (
+                {currentItems.map((item, index) => (
                   <tr
                     key={item.id}
                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -63,7 +77,7 @@ export default function SalesList({
                       scope="row"
                       className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                      {index + 1}
+                      {(currentPage - 1) * itemsPerPage + index + 1}
                     </th>
                     {Object.keys(item).map((key) => {
                       if (key !== "id") {
@@ -102,6 +116,79 @@ export default function SalesList({
             )}
           </table>
         </div>
+
+        {totalPages > 1 && (
+          <nav
+            className="flex justify-center items-center gap-x-1 mt-4"
+            aria-label="Pagination"
+          >
+            <button
+              type="button"
+              className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-2 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
+              aria-label="Previous"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <svg
+                className="shrink-0 size-3.5"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+              <span className="sr-only">Previous</span>
+            </button>
+
+            <div className="flex items-center gap-x-1">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  type="button"
+                  className={`min-h-[38px] min-w-[38px] flex justify-center items-center py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-300 dark:bg-neutral-600 dark:text-white dark:focus:bg-neutral-500 ${
+                    currentPage === index + 1
+                      ? "bg-gray-200 text-gray-800"
+                      : "text-gray-800 hover:bg-gray-100 dark:text-white dark:hover:bg-white/10"
+                  }`}
+                  onClick={() => handlePageChange(index + 1)}
+                  aria-current={currentPage === index + 1 ? "page" : undefined}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-2 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
+              aria-label="Next"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              <span className="sr-only">Next</span>
+              <svg
+                className="shrink-0 size-3.5"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m9 18 6-6-6-6"></path>
+              </svg>
+            </button>
+          </nav>
+        )}
       </div>
     </>
   );
