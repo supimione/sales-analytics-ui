@@ -10,7 +10,16 @@
       "Saturday"
     ],
     "session": ["MOR (13:00)", "DAY (18:00)", "EVE (20:00)"],
-    "status": ["Active", "In Active"]
+    "groups": ["30", "40", "50", "60"],
+    "status": ["Active", "In Active"],
+    "filterData": [
+      "All",
+      "Today",
+      "Yesterday",
+      "Last 3 Days",
+      "Last 7 Days",
+      "Last 30 Days"
+    ]
   },
   "tableHeader": {
     "sales": [
@@ -23,7 +32,7 @@
       "To",
       "Same",
       "Group",
-      "Ticket Qty.",
+      "Qty.",
       "Action"
     ],
     "distributor": [

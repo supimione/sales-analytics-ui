@@ -2,7 +2,7 @@
 import React from "react";
 import { IoMdClose } from "react-icons/io";
 
-const Modal = ({ title, isOpen, onClose, children, width }) => {
+const Modal = ({ isOpen, title, onClose, children, width }) => {
   if (!isOpen) return null; // Don't render the modal if it's not open
 
   return (

@@ -51,7 +51,7 @@ export default function Home() {
 
   const handleTabChange = (tab) => setTabName(tab);
 
-  const handlePopup = (type) => {
+  const handleAddPopup = (type) => {
     if (type === "distributer") {
       setDistributerPopup(!distributerPopup);
       if (!distributerPopup) {
@@ -87,7 +87,6 @@ export default function Home() {
     setEditingTicketId(null);
   };
 
-  // Handle form input change for distributor
   const handleInputChange = (e, formType) => {
     const { name, value } = e.target;
     if (formType === "distributer") {
@@ -103,7 +102,6 @@ export default function Home() {
     }
   };
 
-  // Handle form submission for distributor
   const handleSubmitForm = (e, type) => {
     e.preventDefault();
     if (type === "distributer") {
@@ -257,8 +255,8 @@ export default function Home() {
           <>
             <PageHeader
               title="Distributer Report"
-              buttonTitle="+ Add Distributer"
-              add={() => handlePopup("distributer")}
+              btnText="+ Add Distributer"
+              onAdd={() => handleAddPopup("distributer")}
             />
 
             <Table
@@ -271,12 +269,12 @@ export default function Home() {
             <Modal
               title="Add Distributor"
               isOpen={distributerPopup}
-              onClose={() => handlePopup("distributer")}
+              onClose={() => handleAddPopup("distributer")}
               width="max-w-4xl"
             >
               <form onSubmit={(e) => handleSubmitForm(e, "distributer")}>
                 <p className="mb-4 text-xs text-rose-400">
-                  The field labels marked with * are required input fields.
+                  The fields marked with * are mandatory.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-2">
                   <div>
@@ -381,7 +379,7 @@ export default function Home() {
                 </div>
                 <div className="flex justify-end bg-gray-100 p-3 rounded-b-lg space-x-2">
                   <button
-                    onClick={() => handlePopup("distributer")}
+                    onClick={() => handleAddPopup("distributer")}
                     className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100"
                   >
                     Cancel
@@ -398,8 +396,8 @@ export default function Home() {
 
             <DeletePopup
               isOpen={showDeletePopup}
-              cancel={cancelDelete}
-              confirm={confirmDelete}
+              onCancel={cancelDelete}
+              onConfirm={confirmDelete}
             />
           </>
         )}
@@ -408,8 +406,8 @@ export default function Home() {
           <>
             <PageHeader
               title="Tickets Report"
-              buttonTitle="+ Add Tickets"
-              add={() => handlePopup("ticket")}
+              btnText="+ Add Tickets"
+              onAdd={() => handleAddPopup("ticket")}
             />
 
             <Table
@@ -422,12 +420,12 @@ export default function Home() {
             <Modal
               title="Add Ticket"
               isOpen={ticketPopup}
-              onClose={() => handlePopup("ticket")}
+              onClose={() => handleAddPopup("ticket")}
               width="max-w-2xl"
             >
               <form onSubmit={(e) => handleSubmitForm(e, "ticket")}>
                 <p className="mb-4 text-xs text-rose-400">
-                  The field labels marked with * are required input fields.
+                  The fields marked with * are mandatory.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 mb-6">
                   <div>
@@ -464,7 +462,7 @@ export default function Home() {
                 </div>
                 <div className="flex justify-end bg-gray-100 p-3 rounded-b-lg space-x-2">
                   <button
-                    onClick={() => handlePopup("ticket")}
+                    onClick={() => handleAddPopup("ticket")}
                     className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100"
                   >
                     Cancel
@@ -481,8 +479,8 @@ export default function Home() {
 
             <DeletePopup
               isOpen={showDeletePopup}
-              cancel={cancelDelete}
-              confirm={confirmDelete}
+              onCancel={cancelDelete}
+              onConfirm={confirmDelete}
             />
           </>
         )}
