@@ -268,7 +268,7 @@ export default function Home() {
           <>
             <PageHeader
               title="Distributer Report"
-              btnText="+ Add Distributer"
+              btnText="+ Add"
               onAdd={() => handleAddPopup("distributer")}
             />
 
