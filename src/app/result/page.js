@@ -11,159 +11,37 @@ import masterData from "@/data/masterData.json";
 import { IoMdClose, IoMdDownload } from "react-icons/io";
 import { MdDelete, MdEditDocument } from "react-icons/md";
 
-const prizeData = [
+const initialTicketGridData = [
   {
-    prize: "1st Prize ₹1 Crore/-",
-    numbers: ["56E 81013"],
-  },
-  {
-    prize: "2nd Prize ₹9000/-",
-    numbers: [
-      "13142",
-      "13458",
-      "18574",
-      "29786",
-      "30127",
-      "34518",
-      "45754",
-      "52222",
-      "85210",
-      "94495",
-    ],
-  },
-  {
-    prize: "3rd Prize ₹450/-",
-    numbers: [
-      "0941",
-      "1771",
-      "4993",
-      "5126",
-      "5273",
-      "5968",
-      "6065",
-      "7481",
-      "7502",
-      "9372",
-    ],
-  },
-  {
-    prize: "4th Prize ₹250/-",
-    numbers: [
-      "0153",
-      "0967",
-      "2747",
-      "4677",
-      "5062",
-      "6075",
-      "7705",
-      "7846",
-      "8720",
-      "8536",
-    ],
-  },
-  {
-    prize: "5th Prize ₹120/-",
-    numbers: [
-      "0132",
-      "1082",
-      "2246",
-      "3541",
-      "4589",
-      "7049",
-      "7696",
-      "8621",
-      "9196",
-      "9295",
-      "0668",
-      "1222",
-      "2473",
-      "3548",
-      "5050",
-      "7169",
-      "7832",
-      "8889",
-      "9235",
-      "0829",
-      "1336",
-      "2585",
-      "3754",
-      "5380",
-      "7295",
-      "0132",
-      "1082",
-      "2246",
-      "3541",
-      "4589",
-      "7049",
-      "7696",
-      "8621",
-      "9196",
-      "9295",
-      "0668",
-      "1222",
-      "2473",
-      "3548",
-      "5050",
-      "7169",
-      "7832",
-      "8889",
-      "9235",
-      "0829",
-      "1336",
-      "2585",
-      "3754",
-      "5380",
-      "7295",
-      "0132",
-      "1082",
-      "2246",
-      "3541",
-      "4589",
-      "7049",
-      "7696",
-      "8621",
-      "9196",
-      "9295",
-      "0668",
-      "1222",
-      "2473",
-      "3548",
-      "5050",
-      "7169",
-      "7832",
-      "8889",
-      "9235",
-      "0829",
-      "1336",
-      "2585",
-      "3754",
-      "5380",
-      "7295",
-      "0132",
-      "1082",
-      "2246",
-      "3541",
-      "4589",
-      "7049",
-      "7696",
-      "8621",
-      "9196",
-      "9295",
-      "0668",
-      "1222",
-      "2473",
-      "3548",
-      "5050",
-      "7169",
-      "7832",
-      "8889",
-      "9235",
-      "0829",
-      "1336",
-      "2585",
-      "3754",
-      "5380",
-      "7295",
+    id: 1,
+    date: "2025-01-12",
+    session: "MOR",
+    lotteryName: "Sunday",
+    prizes: [
+      {
+        prize: "1st Prize ₹1 Crore/-",
+        numbers: ["56E 81013"],
+      },
+      {
+        prize: "2nd Prize ₹9000/-",
+        numbers: [
+          "13142, 13458, 18574, 29786, 30127, 34518, 45754, 52222, 85210, 94495",
+        ],
+      },
+      {
+        prize: "3rd Prize ₹450/-",
+        numbers: ["0941, 1771, 4993, 5126, 5273, 5968, 6065, 7481, 7502, 9372"],
+      },
+      {
+        prize: "4th Prize ₹250/-",
+        numbers: ["0153, 0967, 2747, 4677, 5062, 6075, 7705, 7846, 8720, 8536"],
+      },
+      {
+        prize: "5th Prize ₹120/-",
+        numbers: [
+          "0132, 1082, 2246, 3541, 4589, 7049, 7696, 8621, 9196, 9295, 0668, 1222, 2473, 3548, 5050, 7169, 7832, 8889, 9235, 0829, 1336, 2585, 3754, 5380, 7295",
+        ],
+      },
     ],
   },
 ];
@@ -192,9 +70,8 @@ export default function Home() {
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [showWinners, setShowWinners] = useState(false);
   const [update, setUpdate] = useState(false);
-  const [ticketGridData, setTicketGridData] = useState([]);
-  console.log(ticketGridData, "ticketGridData");
-
+  const [ticketGridData, setTicketGridData] = useState(initialTicketGridData);
+  const [prizeItem, setPrizeItem] = useState("");
   const tenInputs = Array.from({ length: 10 }, (_, i) => i + 1); // Create an array of numbers 1 to 10
   const hundredInputs = Array.from({ length: 100 }, (_, i) => i + 1); // Create an array of numbers 1 to 100
 
@@ -229,8 +106,9 @@ export default function Home() {
     setUpdate(false);
   };
 
-  const handleShowWinners = () => {
+  const handleShowWinners = (items) => {
     setShowWinners(!showWinners);
+    setPrizeItem(items);
   };
 
   const handleSubmit = (e) => {
@@ -328,9 +206,9 @@ export default function Home() {
                     </th>
                     <td
                       className="px-6 py-4 text-blue-500 underline cursor-pointer"
-                      onClick={handleShowWinners}
+                      onClick={() => handleShowWinners(item.prizes)}
                     >
-                      Email
+                      RESULT
                     </td>
                     <td className="px-6 py-4">{item.date}</td>
                     <td className="px-6 py-4">{item.lotteryName}</td>
@@ -529,7 +407,6 @@ export default function Home() {
       {showWinners && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white text-gray-900 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
-            {/* Close and Download Buttons */}
             <div className="absolute top-4 right-4 flex space-x-2">
               <button
                 className="cursor-pointer text-xl"
@@ -546,7 +423,6 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Header */}
             <div className="bg-gray-50 text-center p-8 flex flex-col items-center justify-center">
               <h1 className="text-3xl font-bold">LMS STATE LOTTERIES</h1>
               <div className="text-xl font-extrabold mt-4">
@@ -559,31 +435,26 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Prize Data */}
             <div className="text-center p-6">
-              {prizeData.map((prize, index) => (
-                <div key={index} className="mb-6 last:mb-0">
-                  <h3 className="text-lg font-bold">{prize.prize}</h3>
-
-                  {/* Conditional rendering for single number or grid of numbers */}
-                  {prize.numbers.length === 1 ? (
-                    <div className="mt-4 flex justify-center">
-                      <span className="text-sm p-2 bg-gray-100 rounded">
-                        {prize.numbers[0]}
-                      </span>
+              {ticketGridData.map((ticket) => (
+                <div key={ticket.id} className="mb-8">
+                  {ticket.prizes.map((prize, index) => (
+                    <div key={index} className="mb-6 last:mb-0">
+                      <h3 className="text-lg font-bold">{prize.prize}</h3>
+                      <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-10 lg:grid-cols-10 gap-2 mt-4">
+                        {prize.numbers[0]
+                          .split(",")
+                          .map((number, numberIndex) => (
+                            <span
+                              key={numberIndex}
+                              className="text-sm p-1 bg-gray-100 rounded"
+                            >
+                              {number.trim()}
+                            </span>
+                          ))}
+                      </div>
                     </div>
-                  ) : (
-                    <div className="grid grid-cols-10 gap-2 mt-4">
-                      {prize.numbers.map((number, numberIndex) => (
-                        <span
-                          key={numberIndex}
-                          className="text-sm p-1 bg-gray-100 rounded"
-                        >
-                          {number}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  ))}
                 </div>
               ))}
             </div>

@@ -1,15 +1,11 @@
 "use client";
 
-import { useState } from "react";
-
-//COMPONENTS
+import { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import Table from "@/components/Table";
-import Modal from "@/components/Modal"; // import the Modal component
-import DeletePopup from "@/components/DeletePopup"; // Import the DeletePopup component
+import Modal from "@/components/Modal";
+import DeletePopup from "@/components/DeletePopup";
 import masterData from "@/data/masterData.json";
-
-//react-icons
 import { FaTicketAlt, FaUser } from "react-icons/fa";
 
 const tabData = [
@@ -29,17 +25,29 @@ export default function Home() {
   const [deletingItemType, setDeletingItemType] = useState(""); // Type of item ("distributer" or "ticket")
   const [editingDistributorId, setEditingDistributorId] = useState(null); // Track the distributor being edited
   const [editingTicketId, setEditingTicketId] = useState(null); // Track the ticket being edited
-  const [distributorForm, setDistributorForm] = useState({
-    name: "",
-    companyName: "",
-    username: "",
-    phone: "",
-    address: "",
-    session: "",
-  });
-  const [ticketForm, setTicketForm] = useState({
-    ticketName: "",
-  });
+  const [distributorForm, setDistributorForm] = useState("");
+  const [ticketForm, setTicketForm] = useState("");
+
+  useEffect(() => {
+    setDistributorData([
+      {
+        id: 1,
+        name: "Rahit Das",
+        companyName: "Lottery Company",
+        username: "sumit123",
+        phone: "9933111222",
+        address: "Murshidabad",
+        status: "Active",
+      },
+    ]);
+    setTicketData([
+      {
+        id: 1,
+        ticketName: "DEAR",
+        status: "Active",
+      },
+    ]);
+  }, []);
 
   const handleTabChange = (tab) => setTabName(tab);
 
@@ -65,6 +73,7 @@ export default function Home() {
       phone: "",
       address: "",
       session: "",
+      status: "",
     });
     setPassWord("");
     setEditingDistributorId(null);
@@ -73,6 +82,7 @@ export default function Home() {
   const resetTicketForm = () => {
     setTicketForm({
       ticketName: "",
+      status: "",
     });
     setEditingTicketId(null);
   };
@@ -106,7 +116,7 @@ export default function Home() {
         setDistributerPopup(false);
       }
     } else if (type === "ticket") {
-      if (ticketForm.ticketName) {
+      if (ticketForm.ticketName && ticketForm.status) {
         if (editingTicketId) {
           updateTicket();
         } else {
@@ -125,9 +135,9 @@ export default function Home() {
       !distributorForm.companyName ||
       !distributorForm.phone ||
       !distributorForm.address ||
-      !distributorForm.session ||
       !distributorForm.username ||
-      !password
+      !distributorForm.status ||
+      (!editingDistributorId && !password)
     ) {
       alert("Please fill in all fields.");
       return false;
@@ -262,6 +272,7 @@ export default function Home() {
               title="Add Distributor"
               isOpen={distributerPopup}
               onClose={() => handlePopup("distributer")}
+              width="max-w-4xl"
             >
               <form onSubmit={(e) => handleSubmitForm(e, "distributer")}>
                 <p className="mb-4 text-xs text-rose-400">
@@ -269,10 +280,11 @@ export default function Home() {
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-2">
                   <div>
-                    <label className="mb-2 text-xs font-semibold">Name</label>
+                    <label className="mb-2 text-xs font-semibold">Name *</label>
                     <input
                       type="text"
                       name="name"
+                      autoComplete="off"
                       value={distributorForm.name}
                       onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
@@ -280,11 +292,12 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="mb-2 text-xs font-semibold">
-                      Company Name
+                      Company Name *
                     </label>
                     <input
                       type="text"
                       name="companyName"
+                      autoComplete="off"
                       value={distributorForm.companyName}
                       onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
@@ -292,11 +305,12 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="mb-2 text-xs font-semibold">
-                      Phone No.
+                      Phone No. *
                     </label>
                     <input
                       type="text"
                       name="phone"
+                      autoComplete="off"
                       value={distributorForm.phone}
                       onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
@@ -304,11 +318,12 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="mb-2 text-xs font-semibold">
-                      Address
+                      Address *
                     </label>
                     <input
                       type="text"
                       name="address"
+                      autoComplete="off"
                       value={distributorForm.address}
                       onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
@@ -316,15 +331,21 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="mb-2 text-xs font-semibold">
-                      Session
+                      Status *
                     </label>
-                    <input
-                      type="text"
-                      name="session"
-                      value={distributorForm.session}
+                    <select
+                      name="status"
+                      value={distributorForm.status}
                       onChange={(e) => handleInputChange(e, "distributer")}
-                      className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                    />
+                      className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700 focus:outline-none"
+                    >
+                      <option value="">---</option>
+                      {masterData.masterDropdown.status.map((status, index) => (
+                        <option key={index} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 <p className="text-cyan-500 text-sm font-semibold mt-6 mb-3">
@@ -333,11 +354,12 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div>
                     <label className="mb-2 text-xs font-semibold">
-                      Username
+                      Username *
                     </label>
                     <input
                       type="text"
                       name="username"
+                      autoComplete="off"
                       value={distributorForm.username}
                       onChange={(e) => handleInputChange(e, "distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
@@ -345,12 +367,13 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="mb-2 text-xs font-semibold">
-                      Password
+                      Password *
                     </label>
                     <input
                       type="text"
                       name="password"
                       value={password}
+                      autoComplete="off"
                       onChange={(e) => setPassWord(e.target.value)}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
@@ -367,7 +390,7 @@ export default function Home() {
                     type="submit"
                     className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
                   >
-                    Submit
+                    Save Changes
                   </button>
                 </div>
               </form>
@@ -400,6 +423,7 @@ export default function Home() {
               title="Add Ticket"
               isOpen={ticketPopup}
               onClose={() => handlePopup("ticket")}
+              width="max-w-2xl"
             >
               <form onSubmit={(e) => handleSubmitForm(e, "ticket")}>
                 <p className="mb-4 text-xs text-rose-400">
@@ -408,15 +432,34 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 mb-6">
                   <div>
                     <label className="mb-2 text-xs font-semibold">
-                      Ticket Name
+                      Ticket Name *
                     </label>
                     <input
                       type="text"
                       name="ticketName"
+                      autoComplete="off"
                       value={ticketForm.ticketName}
                       onChange={(e) => handleInputChange(e, "ticket")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
+                  </div>
+                  <div>
+                    <label className="mb-2 text-xs font-semibold">
+                      Status *
+                    </label>
+                    <select
+                      name="status"
+                      value={ticketForm.status}
+                      onChange={(e) => handleInputChange(e, "ticket")}
+                      className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700"
+                    >
+                      <option value="">---</option>
+                      {masterData.masterDropdown.status.map((status, index) => (
+                        <option key={index} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 <div className="flex justify-end bg-gray-100 p-3 rounded-b-lg space-x-2">
@@ -430,7 +473,7 @@ export default function Home() {
                     type="submit"
                     className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
                   >
-                    Submit
+                    Save Changes
                   </button>
                 </div>
               </form>

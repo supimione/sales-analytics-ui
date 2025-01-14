@@ -12,7 +12,6 @@ import {
   FaChartBar,
   FaFileAlt,
 } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
 
 const menuItems = [
   { id: 1, link: "/", title: "Dashboard", icon: FaHome },

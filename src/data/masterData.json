@@ -8,10 +8,24 @@
       "Thursday",
       "Friday",
       "Saturday"
-    ]
+    ],
+    "session": ["MOR (13:00)", "DAY (18:00)", "EVE (20:00)"],
+    "status": ["Active", "In Active"]
   },
-
   "tableHeader": {
+    "sales": [
+      "Sl No.",
+      "Ticket Ref No.",
+      "Date",
+      "Customer",
+      "Lottery",
+      "From",
+      "To",
+      "Same",
+      "Group",
+      "Ticket Qty.",
+      "Action"
+    ],
     "distributor": [
       "Sl No.",
       "Name",
@@ -19,10 +33,10 @@
       "Username",
       "Phone",
       "Address",
-      "Session",
+      "Status",
       "Action"
     ],
-    "ticket": ["Sl No.", "Ticket Name", "Action"],
+    "ticket": ["Sl No.", "Ticket Name", "Status", "Action"],
     "result": [
       "Sl No.",
       "Result Ref No.",
