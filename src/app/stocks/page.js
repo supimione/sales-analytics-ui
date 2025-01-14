@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { saveAs } from "file-saver"; // To help with file download
+import * as XLSX from "xlsx"; // Import xlsx for Excel export
 import SalesList from "@/components/SalesList";
 import DeletePopup from "@/components/DeletePopup";
 import masterData from "@/data/masterData.json";
@@ -103,7 +105,32 @@ export default function Home() {
     setShowDeletePopup(false);
   };
 
-  const handleExportExcel = () => {};
+  const handleExportExcel = () => {
+    // Convert the salesList into an Excel-compatible format
+    const ws = XLSX.utils.json_to_sheet(stockList, {
+      header: [
+        "id",
+        "ticketRef",
+        "date",
+        "customer",
+        "lottery",
+        "from",
+        "to",
+        "same",
+        "group",
+        "ticketQty",
+      ],
+    });
+
+    // Create a new workbook and append the sheet to it
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Stocks Data");
+
+    // Write the Excel file and trigger download
+    const excelFile = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelFile], { type: "application/octet-stream" });
+    saveAs(blob, "stocks_data.xlsx");
+  };
 
   return (
     <div className="p-5">

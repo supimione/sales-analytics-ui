@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { saveAs } from "file-saver"; // To help with file download
+import * as XLSX from "xlsx"; // Import xlsx for Excel export
 import PageHeader from "@/components/PageHeader";
 import SalesList from "@/components/SalesList";
 import CreateSalePopup from "@/components/CreateSalePopup";
@@ -96,8 +98,6 @@ export default function Home() {
     setUnsoldEdit(null);
   };
 
-  const handleExportExcel = () => {};
-
   const handleEdit = (id) => {
     const itemToEdit = unsoldList.find((item) => item.id === id);
     setUnsoldEdit(itemToEdit);
@@ -135,6 +135,33 @@ export default function Home() {
     }
     setAddPopupOpen(false);
     setUnsoldEdit(null);
+  };
+
+  const handleExportExcel = () => {
+    // Convert the salesList into an Excel-compatible format
+    const ws = XLSX.utils.json_to_sheet(unsoldList, {
+      header: [
+        "id",
+        "ticketRef",
+        "date",
+        "customer",
+        "lottery",
+        "from",
+        "to",
+        "same",
+        "group",
+        "ticketQty",
+      ],
+    });
+
+    // Create a new workbook and append the sheet to it
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Unsold Data");
+
+    // Write the Excel file and trigger download
+    const excelFile = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelFile], { type: "application/octet-stream" });
+    saveAs(blob, "unsold_data.xlsx");
   };
 
   return (
