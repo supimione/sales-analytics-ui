@@ -108,11 +108,7 @@ export default function Home() {
 
   return (
     <div className="p-5">
-      <PageHeader
-        title="Ticket Sale List"
-        btnText="+ Add Sales"
-        onAdd={handleAddPopup}
-      />
+      <PageHeader title="Sales List" btnText="+ Add" onAdd={handleAddPopup} />
 
       <SalesList
         tableHeader={masterData.tableHeader.sales}
@@ -125,8 +121,8 @@ export default function Home() {
       <CreateSalePopup
         isOpen={addPopupOpen}
         ticketRef={false}
-        title={edit ? "Edit Ticket Sale" : "Add Ticket Sale"}
-        btnText={edit ? "Update Sale" : "Create Sale"}
+        title={edit ? "Edit Sales Ticket" : "Add Sales Ticket"}
+        btnText={edit ? "Update Changes" : "Save Changes"}
         onClose={handleAddPopup}
         onCreate={handleCreateSales}
         initialValues={edit}

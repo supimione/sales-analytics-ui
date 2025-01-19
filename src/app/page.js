@@ -9,12 +9,12 @@ import masterData from "@/data/masterData.json";
 import { FaTicketAlt, FaUser } from "react-icons/fa";
 
 const tabData = [
-  { title: "distributer", icon: FaUser },
-  { title: "tickets", icon: FaTicketAlt },
+  { title: "Distributer", icon: FaUser },
+  { title: "Tickets", icon: FaTicketAlt },
 ];
 
 export default function Home() {
-  const [tabName, setTabName] = useState("distributer"); // Default tab
+  const [tabName, setTabName] = useState("Distributer"); // Default tab
   const [distributerPopup, setDistributerPopup] = useState(false); // add distributer popup
   const [ticketPopup, setTicketPopup] = useState(false); // add ticket popup
   const [password, setPassWord] = useState("");
@@ -66,12 +66,12 @@ export default function Home() {
   const handleTabChange = (tab) => setTabName(tab);
 
   const handleAddPopup = (type) => {
-    if (type === "distributer") {
+    if (type === "Distributer") {
       setDistributerPopup(!distributerPopup);
       if (!distributerPopup) {
         resetDistributorForm();
       }
-    } else if (type === "ticket") {
+    } else if (type === "Tickets") {
       setTicketPopup(!ticketPopup);
       if (!ticketPopup) {
         resetTicketForm();
@@ -102,12 +102,12 @@ export default function Home() {
 
   const handleInputChange = (e, formType) => {
     const { name, value } = e.target;
-    if (formType === "distributer") {
+    if (formType === "Distributer") {
       setDistributorForm((prev) => ({
         ...prev,
         [name]: value,
       }));
-    } else if (formType === "ticket") {
+    } else if (formType === "Tickets") {
       setTicketForm((prev) => ({
         ...prev,
         [name]: value,
@@ -117,7 +117,7 @@ export default function Home() {
 
   const handleSubmitForm = (e, type) => {
     e.preventDefault();
-    if (type === "distributer") {
+    if (type === "Distributer") {
       if (validateDistributorForm()) {
         if (editingDistributorId) {
           updateDistributor();
@@ -126,7 +126,7 @@ export default function Home() {
         }
         setDistributerPopup(false);
       }
-    } else if (type === "ticket") {
+    } else if (type === "Tickets") {
       if (ticketForm.ticketName && ticketForm.status) {
         if (editingTicketId) {
           updateTicket();
@@ -189,14 +189,14 @@ export default function Home() {
   };
 
   const handleEdit = (id, type) => {
-    if (type === "distributer") {
+    if (type === "Distributer") {
       const distributorToEdit = distributorData.find((item) => item.id === id);
       if (distributorToEdit) {
         setDistributorForm(distributorToEdit);
         setEditingDistributorId(id);
         setDistributerPopup(true);
       }
-    } else if (type === "ticket") {
+    } else if (type === "Tickets") {
       const ticketToEdit = ticketData.find((item) => item.id === id);
       if (ticketToEdit) {
         setTicketForm(ticketToEdit);
@@ -213,11 +213,11 @@ export default function Home() {
   };
 
   const confirmDelete = () => {
-    if (deletingItemType === "distributer") {
+    if (deletingItemType === "Distributer") {
       setDistributorData((prevData) =>
         prevData.filter((item) => item.id !== deletingItemId)
       );
-    } else if (deletingItemType === "ticket") {
+    } else if (deletingItemType === "Tickets") {
       setTicketData((prevData) =>
         prevData.filter((item) => item.id !== deletingItemId)
       );
@@ -238,54 +238,56 @@ export default function Home() {
 
   return (
     <>
-      <div className="border-b border-gray-200 dark:border-gray-700">
-        <ul className="flex flex-wrap -mb-px text-sm font-medium text-gray-500 dark:text-gray-400">
+      <div className="px-4 py-5">
+        <ul class="flex border-b">
           {tabData.map(({ title, icon: Icon }) => (
             <li
               key={title}
-              className={`me-2 cursor-pointer p-4 flex items-center ${
+              className={`w-32 px-4 py-3 ml-1 inline-flex items-center text-black text-sm rounded ${
                 tabName === title
-                  ? "text-blue-600 border-b-2 border-blue-600 dark:text-blue-500 dark:border-blue-500"
-                  : "hover:text-gray-600 hover:border-gray-300"
+                  ? "text-white bg-blue-500"
+                  : "bg-gray-300 hover:text-gray-600 hover:border-gray-300"
               }`}
               onClick={() => handleTabChange(title)}
             >
-              <Icon
-                className={`w-5 h-5 me-2 ${
-                  tabName === title
-                    ? "text-blue-600 dark:text-blue-500"
-                    : "text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300"
-                }`}
-              />
-              <span>{title.toUpperCase()}</span>
+              <div className="flex items-center justify-center">
+                <Icon
+                  className={`w-4 h-4 me-2 ${
+                    tabName === title
+                      ? "text-white"
+                      : "text-gray-400 group-hover:text-gray-500"
+                  }`}
+                />
+                <span>{title}</span>
+              </div>
             </li>
           ))}
         </ul>
       </div>
 
       <div className="p-5">
-        {tabName === "distributer" && (
+        {tabName === "Distributer" && (
           <>
             <PageHeader
-              title="Distributer Report"
+              title="Distributors"
               btnText="+ Add"
-              onAdd={() => handleAddPopup("distributer")}
+              onAdd={() => handleAddPopup("Distributer")}
             />
 
             <Table
               headers={masterData.tableHeader.distributor}
               data={distributorData}
-              onEdit={(id) => handleEdit(id, "distributer")}
-              onDelete={(id) => handleDelete(id, "distributer")}
+              onEdit={(id) => handleEdit(id, "Distributer")}
+              onDelete={(id) => handleDelete(id, "Distributer")}
             />
 
             <Modal
               title="Add Distributor"
               isOpen={distributerPopup}
-              onClose={() => handleAddPopup("distributer")}
+              onClose={() => handleAddPopup("Distributer")}
               width="max-w-4xl"
             >
-              <form onSubmit={(e) => handleSubmitForm(e, "distributer")}>
+              <form onSubmit={(e) => handleSubmitForm(e, "Distributer")}>
                 <p className="mb-4 text-xs text-rose-400">
                   The fields marked with * are mandatory.
                 </p>
@@ -297,7 +299,7 @@ export default function Home() {
                       name="name"
                       autoComplete="off"
                       value={distributorForm.name}
-                      onChange={(e) => handleInputChange(e, "distributer")}
+                      onChange={(e) => handleInputChange(e, "Distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -310,7 +312,7 @@ export default function Home() {
                       name="companyName"
                       autoComplete="off"
                       value={distributorForm.companyName}
-                      onChange={(e) => handleInputChange(e, "distributer")}
+                      onChange={(e) => handleInputChange(e, "Distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -323,7 +325,7 @@ export default function Home() {
                       name="phone"
                       autoComplete="off"
                       value={distributorForm.phone}
-                      onChange={(e) => handleInputChange(e, "distributer")}
+                      onChange={(e) => handleInputChange(e, "Distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -336,7 +338,7 @@ export default function Home() {
                       name="address"
                       autoComplete="off"
                       value={distributorForm.address}
-                      onChange={(e) => handleInputChange(e, "distributer")}
+                      onChange={(e) => handleInputChange(e, "Distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -347,7 +349,7 @@ export default function Home() {
                     <select
                       name="status"
                       value={distributorForm.status}
-                      onChange={(e) => handleInputChange(e, "distributer")}
+                      onChange={(e) => handleInputChange(e, "Distributer")}
                       className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700 focus:outline-none"
                     >
                       <option value="">---</option>
@@ -372,7 +374,7 @@ export default function Home() {
                       name="username"
                       autoComplete="off"
                       value={distributorForm.username}
-                      onChange={(e) => handleInputChange(e, "distributer")}
+                      onChange={(e) => handleInputChange(e, "Distributer")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -392,7 +394,7 @@ export default function Home() {
                 </div>
                 <div className="flex justify-end bg-gray-100 p-3 rounded-b-lg space-x-2">
                   <button
-                    onClick={() => handleAddPopup("distributer")}
+                    onClick={() => handleAddPopup("Distributer")}
                     className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100"
                   >
                     Cancel
@@ -415,28 +417,28 @@ export default function Home() {
           </>
         )}
 
-        {tabName === "tickets" && (
+        {tabName === "Tickets" && (
           <>
             <PageHeader
-              title="Tickets Report"
-              btnText="+ Add Tickets"
-              onAdd={() => handleAddPopup("ticket")}
+              title="Tickets"
+              btnText="+ Add"
+              onAdd={() => handleAddPopup("Tickets")}
             />
 
             <Table
               headers={masterData.tableHeader.ticket}
               data={ticketData}
-              onEdit={(id) => handleEdit(id, "ticket")}
-              onDelete={(id) => handleDelete(id, "ticket")}
+              onEdit={(id) => handleEdit(id, "Tickets")}
+              onDelete={(id) => handleDelete(id, "Tickets")}
             />
 
             <Modal
               title="Add Ticket"
               isOpen={ticketPopup}
-              onClose={() => handleAddPopup("ticket")}
+              onClose={() => handleAddPopup("Tickets")}
               width="max-w-2xl"
             >
-              <form onSubmit={(e) => handleSubmitForm(e, "ticket")}>
+              <form onSubmit={(e) => handleSubmitForm(e, "Tickets")}>
                 <p className="mb-4 text-xs text-rose-400">
                   The fields marked with * are mandatory.
                 </p>
@@ -450,7 +452,7 @@ export default function Home() {
                       name="ticketName"
                       autoComplete="off"
                       value={ticketForm.ticketName}
-                      onChange={(e) => handleInputChange(e, "ticket")}
+                      onChange={(e) => handleInputChange(e, "Tickets")}
                       className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     />
                   </div>
@@ -461,7 +463,7 @@ export default function Home() {
                     <select
                       name="status"
                       value={ticketForm.status}
-                      onChange={(e) => handleInputChange(e, "ticket")}
+                      onChange={(e) => handleInputChange(e, "Tickets")}
                       className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700"
                     >
                       <option value="">---</option>
@@ -475,7 +477,7 @@ export default function Home() {
                 </div>
                 <div className="flex justify-end bg-gray-100 p-3 rounded-b-lg space-x-2">
                   <button
-                    onClick={() => handleAddPopup("ticket")}
+                    onClick={() => handleAddPopup("Tickets")}
                     className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100"
                   >
                     Cancel

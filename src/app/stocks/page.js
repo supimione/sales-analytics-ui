@@ -76,7 +76,7 @@ export default function Home() {
 
   return (
     <div className="p-5">
-      <h1 className="text-xl font-bold">All Stocks</h1>
+      <h1 className="text-xl font-bold">Stock List</h1>
 
       <SalesList
         tableHeader={masterData.tableHeader.sales}

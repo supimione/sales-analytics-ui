@@ -43,7 +43,7 @@ export default function RootLayout({ children }) {
       <body>
         <Sidebar sidebarOpen={sidebarOpen} />
         <Header sidebarToggle={handleSidebarToggle} />
-        <main className="ml-0 lg:ml-64 pb-6 px-6">
+        <main className="ml-0 lg:ml-64 px-3">
           <div className="bg-white main-min-height text-[rgba(58,53,65,0.87)] transition-shadow duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-md shadow-[0px_2px_10px_0px_rgba(58,53,65,0.1)]">
             {children}
           </div>

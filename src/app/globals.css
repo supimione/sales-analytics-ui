@@ -20,5 +20,17 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 .main-min-height {
-  min-height: calc(100vh - 85px);
+  min-height: calc(100vh - 75px);
+}
+
+/* For Webkit browsers (Chrome, Safari, Edge) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }

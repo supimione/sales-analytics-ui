@@ -30,7 +30,7 @@ export default function SalesList({
 
   return (
     <>
-      <div className="p-4 mt-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      <div className="p-0 sm:p-2 mt-4 sm:border-2 border-gray-100 border-dashed rounded-lg">
         {showHeader && (
           <div className="flex justify-between items-center mb-4">
             <select
@@ -50,7 +50,7 @@ export default function SalesList({
               className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-md focus:outline-none flex items-center"
             >
               <FaFileExcel className="mr-2" />
-              Export Excel
+              Export
             </button>
           </div>
         )}

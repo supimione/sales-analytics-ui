@@ -1,22 +1,18 @@
 "use client";
 
 import { useState } from "react";
-
-//components
 import PageHeader from "@/components/PageHeader";
 import DeletePopup from "@/components/DeletePopup";
 import masterData from "@/data/masterData.json";
-
-//react-icons
 import { IoMdClose, IoMdDownload } from "react-icons/io";
 import { MdDelete, MdEditDocument } from "react-icons/md";
 
 const initialTicketGridData = [
   {
     id: 1,
-    date: "2025-01-12",
-    session: "MOR",
-    lotteryName: "Sunday",
+    date: "12-02-2025",
+    session: "MOR(13:00)",
+    lotteryName: "DEAR",
     prizes: [
       {
         prize: "1st Prize ₹1 Crore/-",
@@ -46,24 +42,7 @@ const initialTicketGridData = [
   },
 ];
 
-const getCurrentDate = () => {
-  const today = new Date();
-  return today.toISOString().split("T")[0]; // Returns date in YYYY-MM-DD format
-};
-
-const getCurrentDay = () => {
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const today = new Date();
-  return daysOfWeek[today.getDay()]; // Returns the current day of the week
-};
+const lotteryData = ["DEAR", "NAGALAND"];
 
 export default function Home() {
   const [popupOpen, setPopupOpen] = useState(false);
@@ -74,22 +53,9 @@ export default function Home() {
   const [prizeItem, setPrizeItem] = useState("");
   const tenInputs = Array.from({ length: 10 }, (_, i) => i + 1); // Create an array of numbers 1 to 10
   const hundredInputs = Array.from({ length: 100 }, (_, i) => i + 1); // Create an array of numbers 1 to 100
-
-  // Initialize state with dynamic date and day
-  const [dropdownData, setDropdownData] = useState({
-    date: getCurrentDate(),
-    session: "MOR",
-    day: getCurrentDay(),
-  });
   const [inputData, setInputData] = useState("");
 
-  const handleDropdownChange = (e) => {
-    const { name, value } = e.target;
-    setDropdownData((prevData) => ({
-      ...prevData,
-      [name]: value, // Update the corresponding field in the state
-    }));
-  };
+  const handleDropdownChange = (e) => {};
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -113,22 +79,15 @@ export default function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent default form submission behavior
-
-    // Combine dropdownData and inputData into a single object
     const combinedData = {
-      ...dropdownData,
       ...inputData,
     };
 
-    // Assuming ticketGridData is an array and you want to add the new combined data to it
     setTicketGridData((prevData) => [...prevData, combinedData]);
-
-    // Close the popup
     setPopupOpen(false);
   };
 
   const handleEditTicketPrize = (item) => {
-    // Initialize dropdown data with item values or default values
     setDropdownData({
       date: item.date,
       session: item.session,
@@ -158,28 +117,21 @@ export default function Home() {
     setUpdate(true);
   };
 
-  // Open delete confirmation popup
   const handleDeleteClick = (props) => {
     setIsDeletePopupOpen(!isDeletePopupOpen);
   };
 
-  // Close delete popup
   const handleCancelDelete = () => {
     setIsDeletePopupOpen(!isDeletePopupOpen);
   };
 
-  // Function to download PDF (only for desktop view)
   const handleDownloadPDF = () => {};
 
   return (
     <div className="p-5">
-      <PageHeader
-        title="Winning"
-        buttonTitle="+ Add Winning"
-        add={handleOpenPopup}
-      />
+      <PageHeader title="Winning" btnText="+ Add" onAdd={handleOpenPopup} />
 
-      <div className="p-4 mt-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      <div className="p-0 sm:p-2 mt-4 sm:border-2 border-2 border-gray-200 border-dashed rounded-lg">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -246,10 +198,10 @@ export default function Home() {
 
       {popupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white text-gray-900 p-6 rounded-lg shadow-lg w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white text-gray-900 m-2 p-4 rounded-lg shadow-lg w-full max-w-5xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center bg-blue-600 text-white p-4 rounded-t-lg">
               <h2 className="text-xl font-bold">
-                {update ? "Update Tickets Prizes" : "Add Tickets Prizes"}
+                {update ? "Update Prizes" : "Add Prizes"}
               </h2>
               <IoMdClose
                 onClick={handleOpenPopup}
@@ -258,67 +210,62 @@ export default function Home() {
             </div>
 
             <div className="p-4 space-y-4">
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 <div>
-                  <label className="block mb-2 text-sm font-medium">
-                    Date *
-                  </label>
+                  <label className="text-sm font-semibold">Date *</label>
                   <input
                     type="date"
                     name="date"
-                    value={dropdownData.date}
                     onChange={handleDropdownChange}
-                    className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                    className="w-full px-4 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 text-sm font-medium">
-                    Session
-                  </label>
+                  <label className="text-sm font-semibold">Session</label>
                   <select
                     name="session"
-                    value={dropdownData.session}
                     onChange={handleDropdownChange}
-                    className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700 focus:outline-none"
+                    className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700 focus:outline-none"
                   >
-                    <option value="MOR">MOR</option>
-                    <option value="DAY">DAY</option>
-                    <option value="EVE">EVE</option>
+                    <option>---</option>
+                    {masterData.masterDropdown.session.map((item, index) => (
+                      <option key={index} value={item}>
+                        {item}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block mb-2 text-sm font-medium">Day</label>
+                  <label className="text-sm font-semibold">Day</label>
                   <select
-                    name="lottery"
-                    value={dropdownData.day}
-                    onChange={handleDropdownChange}
-                    className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700 focus:outline-none"
+                    name="ticket"
+                    onChange={handleInputChange}
+                    className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700 focus:outline-none"
                   >
-                    <option value="Sunday">Sunday</option>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
+                    <option>---</option>
+                    {lotteryData.map((item, index) => (
+                      <option key={index} value={item}>
+                        {item}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
-              <h3 className="text-xl font-bold mb-4">1st Prize </h3>
-              <div className="grid grid-cols-5 gap-4">
+              <h3 className="text-sm font-semibold">1st Prize </h3>
+              <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 !mt-1 gap-2">
                 <input
                   type="number"
                   name="firstPrize"
-                  placeholder="1st Prize"
+                  placeholder="1st"
                   value={inputData?.firstPrize}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                  className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                 />
               </div>
 
-              <h3 className="text-xl font-bold mb-4">2nd Prizes</h3>
-              <div className="grid grid-cols-5 gap-4">
+              <h3 className="text-sm font-semibold">2nd Prizes</h3>
+              <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 !mt-1 gap-2">
                 {tenInputs.map((num) => (
                   <input
                     key={num}
@@ -328,14 +275,14 @@ export default function Home() {
                     onChange={handleInputChange}
                     value={inputData[`secondPrize${num}`] || ""}
                     className={
-                      "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                      "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
                   />
                 ))}
               </div>
 
-              <h3 className="text-xl font-bold mb-4">3rd Prizes</h3>
-              <div className="grid grid-cols-5 gap-4">
+              <h3 className="text-sm font-semibold">3rd Prizes</h3>
+              <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 !mt-1 gap-2">
                 {tenInputs.map((num) => (
                   <input
                     key={num}
@@ -345,14 +292,14 @@ export default function Home() {
                     onChange={handleInputChange}
                     value={inputData[`thirdPrize${num}`] || ""}
                     className={
-                      "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                      "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
                   />
                 ))}
               </div>
 
-              <h3 className="text-xl font-bold mb-4">4th Prizes</h3>
-              <div className="grid grid-cols-5 gap-4">
+              <h3 className="text-sm font-semibold">4th Prizes</h3>
+              <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 !mt-1 gap-2">
                 {tenInputs.map((num) => (
                   <input
                     key={num}
@@ -362,14 +309,14 @@ export default function Home() {
                     onChange={handleInputChange}
                     value={inputData[`fourthPrize${num}`] || ""}
                     className={
-                      "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                      "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
                   />
                 ))}
               </div>
 
-              <h3 className="text-xl font-bold mb-4">5th Prizes</h3>
-              <div className="grid grid-cols-5 gap-4">
+              <h3 className="text-sm font-semibold">5th Prizes</h3>
+              <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 !mt-1 gap-2">
                 {hundredInputs.map((num) => (
                   <input
                     key={num}
@@ -379,7 +326,7 @@ export default function Home() {
                     onChange={handleInputChange}
                     value={inputData[`fifthPrize${num}`] || ""}
                     className={
-                      "w-full px-4 py-2 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
+                      "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
                   />
                 ))}
@@ -406,7 +353,7 @@ export default function Home() {
 
       {showWinners && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white text-gray-900 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
+          <div className="bg-white m-2 text-gray-900 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
             <div className="absolute top-4 right-4 flex space-x-2">
               <button
                 className="cursor-pointer text-xl"
@@ -424,24 +371,26 @@ export default function Home() {
             </div>
 
             <div className="bg-gray-50 text-center p-8 flex flex-col items-center justify-center">
-              <h1 className="text-3xl font-bold">LMS STATE LOTTERIES</h1>
-              <div className="text-xl font-extrabold mt-4">
-                <p>
-                  {dropdownData.session} RESULT {dropdownData.date}
-                </p>
-                <p className="bg-amber-300 max-w-32 mx-auto mt-2 rounded">
+              <h1 className="text-2xl font-bold skew-y-3">
+                LMS STATE LOTTERIES
+              </h1>
+              <div className="text-lg font-extrabold mt-4">
+                <p>session RESULT date</p>
+                <p className="bg-amber-300 max-w-24 text-base mx-auto rounded">
                   11:55 AM
                 </p>
               </div>
             </div>
 
-            <div className="text-center p-6">
+            <div className="text-center p-3 md:p-5">
               {ticketGridData.map((ticket) => (
-                <div key={ticket.id} className="mb-8">
+                <div key={ticket.id}>
                   {ticket.prizes.map((prize, index) => (
-                    <div key={index} className="mb-6 last:mb-0">
-                      <h3 className="text-lg font-bold">{prize.prize}</h3>
-                      <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-10 lg:grid-cols-10 gap-2 mt-4">
+                    <div key={index}>
+                      <h3 className="text-base mt-6 mb-2 font-bold">
+                        {prize.prize}
+                      </h3>
+                      <div className="grid grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2">
                         {prize.numbers[0]
                           .split(",")
                           .map((number, numberIndex) => (
