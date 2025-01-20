@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { FaFileExcel } from "react-icons/fa";
 import { MdDelete, MdEditDocument } from "react-icons/md";
-import masterData from "@/data/masterData.json";
+import masterData from "@/api/masterData.json";
 
 export default function SalesList({
   showHeader = true,

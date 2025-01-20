@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import { saveAs } from "file-saver"; // To help with file download
 import * as XLSX from "xlsx"; // Import xlsx for Excel export
-import PageHeader from "@/components/PageHeader";
-import SalesList from "@/components/SalesList";
-import CreateSalePopup from "@/components/CreateSalePopup";
-import DeletePopup from "@/components/DeletePopup";
-import masterData from "@/data/masterData.json";
+import PageHeader from "@/components/layout/PageHeader";
+import SalesList from "@/components/lists/SalesList";
+import CreateSalePopup from "@/components/forms/CreateSalePopup";
+import DeletePopup from "@/components/forms/DeletePopup";
+import masterData from "@/api/masterData.json";
 
 export default function Home() {
   const [addPopupOpen, setAddPopupOpen] = useState(false);

@@ -1,15 +1,15 @@
-"use client"; // UI manipulation or using any React hook we have to use
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const router = useRouter(); // To navigate to another screen
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState(""); // State to store error message
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,9 +22,14 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
-    // Default credentials
-    const defaultEmail = "admin@gmail.com";
-    const defaultPassword = "Admin@123";
+    const credentials = {
+      admin: { email: "admin@gmail.com", password: "Admin@1212" },
+      distributor: {
+        email: "distribute@gmail.com",
+        password: "Distribute@2121",
+      },
+      user: { email: "user@gmail.com", password: "User@1122" },
+    };
 
     // Validate inputs
     if (!formData.email || !formData.password) {
@@ -32,13 +37,46 @@ export default function Home() {
       return;
     }
 
-    // Check if email and password match the default credentials
+    // Check credentials and redirect accordingly
     if (
-      formData.email === defaultEmail &&
-      formData.password === defaultPassword
+      formData.email === credentials.admin.email &&
+      formData.password === credentials.admin.password
     ) {
-      // Redirect to another screen (for example: dashboard)
-      router.push("/distributer"); // Change "/dashboard" to your actual redirect path
+      // Store admin info in localStorage
+      localStorage.setItem(
+        "adminInfo",
+        JSON.stringify({
+          email: "admin@gmail.com",
+          type: "admin",
+        })
+      );
+      router.push("/admin"); // Redirect to admin dashboard
+    } else if (
+      formData.email === credentials.distributor.email &&
+      formData.password === credentials.distributor.password
+    ) {
+      // Store distributor info in localStorage
+      localStorage.setItem(
+        "distributorInfo",
+        JSON.stringify({
+          email: "distribute@gmail.com",
+          type: "distributor",
+        })
+      );
+      router.push("/distributor"); // Redirect to distributor dashboard
+    } else if (
+      formData.email === credentials.user.email &&
+      formData.password === credentials.user.password
+    ) {
+      // Store user info in localStorage
+      localStorage.setItem(
+        "userInfo",
+        JSON.stringify({
+          email: "user@gmail.com",
+          type: "user",
+        })
+      );
+      router.push("/user"); // Redirect to user dashboard
     } else {
       setError("Invalid email or password");
     }

@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <>
       <div className="px-4 py-5">
-        <ul class="flex border-b">
+        <ul className="flex border-b">
           {tabData.map(({ title, icon: Icon }) => (
             <li
               key={title}

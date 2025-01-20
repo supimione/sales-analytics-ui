@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import PageHeader from "@/components/PageHeader";
-import DeletePopup from "@/components/DeletePopup";
-import masterData from "@/data/masterData.json";
+import PageHeader from "@/components/layout/PageHeader";
+import DeletePopup from "@/components/forms/DeletePopup";
+import masterData from "@/api/masterData.json";
 import { IoMdClose, IoMdDownload } from "react-icons/io";
 import { MdDelete, MdEditDocument } from "react-icons/md";
 

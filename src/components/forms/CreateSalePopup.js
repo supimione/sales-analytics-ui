@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
-import masterData from "@/data/masterData.json";
+import masterData from "@/api/masterData.json";
 
 export default function CreateSalePopup({
   isOpen,

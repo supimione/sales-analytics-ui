@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import PageHeader from "@/components/PageHeader";
-import Table from "@/components/Table";
-import Modal from "@/components/Modal";
-import DeletePopup from "@/components/DeletePopup";
-import masterData from "@/data/masterData.json";
+import PageHeader from "@/components/layout/PageHeader";
+import Table from "@/components/tables/Table";
+import Modal from "@/components/modal/Modal";
+import DeletePopup from "@/components/forms/DeletePopup";
+import masterData from "@/api/masterData.json";
 import { FaTicketAlt, FaUser } from "react-icons/fa";
 
 const tabData = [
@@ -239,7 +239,7 @@ export default function Home() {
   return (
     <>
       <div className="px-4 py-5">
-        <ul class="flex border-b">
+        <ul className="flex border-b">
           {tabData.map(({ title, icon: Icon }) => (
             <li
               key={title}
