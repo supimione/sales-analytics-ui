@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { Provider } from "react-redux";
-import { makeStore } from "../lib/store";
+import { makeStore } from "../dbConfig/store";
 // import { initializeCount } from "../lib/features/counter/counterSlice";
 
 export default function StoreProvider({ count, children }) {

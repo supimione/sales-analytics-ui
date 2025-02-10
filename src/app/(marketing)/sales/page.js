@@ -7,7 +7,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import SalesList from "@/components/lists/SalesList";
 import CreateSalePopup from "@/components/forms/CreateSalePopup";
 import DeletePopup from "@/components/forms/DeletePopup";
-import masterData from "@/api/masterData.json";
+import masterData from "@/jsonData/masterData.json";
 
 export default function Home() {
   const [addPopupOpen, setAddPopupOpen] = useState(false);
@@ -15,6 +15,17 @@ export default function Home() {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [edit, setEdit] = useState(null);
   const [deletingItemId, setDeletingItemId] = useState(null);
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const res = await fetch("/api/users");
+      const data = await res.json();
+      setUsers(data);
+    };
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     setSalesList([
@@ -108,6 +119,7 @@ export default function Home() {
 
   return (
     <div className="p-5">
+      {users}
       <PageHeader title="Sales List" btnText="+ Add" onAdd={handleAddPopup} />
 
       <SalesList

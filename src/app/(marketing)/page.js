@@ -5,7 +5,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import Table from "@/components/tables/Table";
 import Modal from "@/components/modal/Modal";
 import DeletePopup from "@/components/forms/DeletePopup";
-import masterData from "@/api/masterData.json";
+import masterData from "@/jsonData/masterData.json";
 import { FaTicketAlt, FaUser } from "react-icons/fa";
 
 const tabData = [

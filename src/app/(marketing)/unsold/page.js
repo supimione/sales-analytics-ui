@@ -7,7 +7,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import SalesList from "@/components/lists/SalesList";
 import CreateSalePopup from "@/components/forms/CreateSalePopup";
 import DeletePopup from "@/components/forms/DeletePopup";
-import masterData from "@/api/masterData.json";
+import masterData from "@/jsonData/masterData.json";
 
 export default function Home() {
   const [addPopupOpen, setAddPopupOpen] = useState(false);

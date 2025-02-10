@@ -5,7 +5,7 @@ import { saveAs } from "file-saver"; // To help with file download
 import * as XLSX from "xlsx"; // Import xlsx for Excel export
 import SalesList from "@/components/lists/SalesList";
 import DeletePopup from "@/components/forms/DeletePopup";
-import masterData from "@/api/masterData.json";
+import masterData from "@/jsonData/masterData.json";
 
 export default function Home() {
   const [stockList, setStockList] = useState([]);
