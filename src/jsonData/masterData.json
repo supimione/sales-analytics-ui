@@ -37,24 +37,58 @@
       "Price",
       "Action"
     ],
-    "distributor": [
+    "scheme": ["Sl", "Ticket Name", "Time", "Status", "Action"],
+    "superStockist": [
       "Sl",
       "Name",
-      "Company Name",
       "Username",
-      "Phone",
-      "Address",
+      "Password",
+      "Mobile",
+      "Mode",
+      "Rate 5",
+      "Rate 5-B",
+      "Rate 10",
       "Status",
       "Action"
     ],
-    "ticket": ["Sl", "Ticket Name", "Status", "Action"],
-    "result": [
+    "stockist": [
       "Sl",
-      "Result Ref No.",
-      "Date",
-      "Lottery Name",
-      "Sessions",
+      "Name",
+      "Username",
+      "Password",
+      "Mobile",
+      "Mode",
+      "Super Stockist",
+      "Rate 5",
+      "Rate 5-B",
+      "Rate 10",
+      "Status",
       "Action"
-    ]
+    ],
+    "retailer": [
+      "Sl",
+      "Name",
+      "Username",
+      "Password",
+      "Mobile",
+      "Mode",
+      "Stockist",
+      "Rate 5",
+      "Rate 5-B",
+      "Rate 10",
+      "Status",
+      "Action"
+    ],
+    "users": [
+      "Sl",
+      "Name",
+      "Username",
+      "Password",
+      "Mobile",
+      "Mode",
+      "Status",
+      "Action"
+    ],
+    "result": ["Sl", "Ref No.", "Date", "Lottery Name", "Sessions", "Action"]
   }
 }

@@ -10,16 +10,16 @@ import {
   FaTimesCircle,
   FaBoxes,
   FaChartBar,
-  FaFileAlt,
+  FaClipboardList,
 } from "react-icons/fa";
 
 const menuItems = [
-  { id: 1, link: "/", title: "Dashboard", icon: FaHome },
-  { id: 2, link: "/sales", title: "Sales Tickets", icon: FaTicketAlt },
-  { id: 3, link: "/unsold", title: "Unsold Tickets", icon: FaTimesCircle },
-  { id: 4, link: "/stocks", title: "Stock Tickets", icon: FaBoxes },
-  { id: 5, link: "/result", title: "Results", icon: FaChartBar },
-  { id: 6, link: "/reports", title: "Daily Reports", icon: FaFileAlt },
+  { id: 1, link: "/", title: "Master", icon: FaHome }, // FaHome - Represents the home/main page
+  { id: 2, link: "/sales", title: "Sales", icon: FaTicketAlt }, // FaTicketAlt - Represents sales or tickets
+  { id: 3, link: "/unsold", title: "Unsold", icon: FaTimesCircle }, // FaTimesCircle - Represents unsold items
+  { id: 4, link: "/stocks", title: "Stockist", icon: FaBoxes }, // FaBoxes - Represents stock or inventory
+  { id: 5, link: "/result", title: "Results", icon: FaChartBar }, // FaChartBar - Represents a bar chart for results
+  { id: 6, link: "/reports", title: "Daily Reports", icon: FaClipboardList }, // FaFileAlt - Represents a report document
 ];
 
 export default function Sidebar({ sidebarOpen }) {

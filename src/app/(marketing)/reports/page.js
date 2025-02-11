@@ -1,54 +1,49 @@
-"use client"; // Required for UI manipulation or using any React hook
+"use client";
 
 import { useState } from "react";
-import { FaTicketAlt, FaUser } from "react-icons/fa";
+import {
+  FaStore,
+  FaChartLine,
+  FaBan,
+  FaTrophy,
+  FaTimesCircle,
+} from "react-icons/fa";
 
 const tabData = [
-  { title: "Sales Report", icon: FaUser },
-  { title: "Unsold Report", icon: FaTicketAlt },
-  { title: "Stock Report", icon: FaTicketAlt },
-  { title: "Winner Report", icon: FaTicketAlt },
-  { title: "Unsold Winner Report", icon: FaTicketAlt },
+  { title: "Stockist Report", icon: FaStore }, // FaStore represents a business or store
+  { title: "Sales Report", icon: FaChartLine }, // FaChartLine represents sales growth
+  { title: "Unsold Report", icon: FaBan }, // FaBan represents something that didn't sell
+  { title: "Winner Report", icon: FaTrophy }, // FaTrophy represents a winner
+  { title: "Unsold Winner Report", icon: FaTimesCircle }, // FaTimesCircle for unsold, and FaTrophy for winner
 ];
 
 export default function Home() {
-  const [tabName, setTabName] = useState("");
+  const [activeTab, setActiveTab] = useState(0);
 
   return (
     <>
       <div className="px-4 py-5">
-        <ul className="flex border-b">
-          {tabData.map(({ title, icon: Icon }) => (
-            <li
-              key={title}
-              className={`w-64 px-4 py-3 ml-1 inline-flex items-center text-black text-sm rounded ${
-                tabName === title
-                  ? "text-white bg-blue-500"
-                  : "bg-gray-300 hover:text-gray-600 hover:border-gray-300"
+        <div className="flex border-b">
+          {tabData.map((tab, index) => (
+            <button
+              key={index}
+              className={`py-2 px-4 text-sm ${
+                activeTab === index
+                  ? "border-b-2 border-blue-500 text-blue-500"
+                  : "text-gray-600 hover:text-blue-500"
               }`}
-              onClick={() => handleTabChange(title)}
+              onClick={() => setActiveTab(index)}
             >
               <div className="flex items-center justify-center">
-                <Icon
-                  className={`w-4 h-4 me-2 ${
-                    tabName === title
-                      ? "text-white"
-                      : "text-gray-400 group-hover:text-gray-500"
-                  }`}
-                />
-                <span>{title}</span>
+                <tab.icon className="text-sm mr-2" />
+                {tab.title}
               </div>
-            </li>
+            </button>
           ))}
-        </ul>
-      </div>
+        </div>
 
-      <div className="p-5">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold">Report</h1>
-          <button className="px-4 py-2 text-sm text-white bg-[#597cff] rounded hover:bg-sky-700">
-            + Add Sales
-          </button>
+        <div className="mt-4 p-4 border border-gray-200 rounded-lg">
+          {/* {tabContents[activeTab].content}asdssd */}sd
         </div>
       </div>
     </>
