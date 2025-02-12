@@ -89,6 +89,14 @@
       "Status",
       "Action"
     ],
-    "result": ["Sl", "Ref No.", "Date", "Lottery Name", "Sessions", "Action"]
+    "result": [
+      "Sl",
+      "Ref No.",
+      "Date",
+      "Lottery Name",
+      "Sessions",
+      "Download",
+      "Action"
+    ]
   }
 }

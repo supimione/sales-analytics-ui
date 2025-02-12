@@ -1,68 +1,44 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import AddButton from "@/components/layout/AddButton";
-import DeletePopup from "@/components/modal/DeletePopup";
 import masterData from "@/jsonData/masterData.json";
-import { IoMdClose, IoMdDownload } from "react-icons/io";
-import { MdDelete, MdEditDocument } from "react-icons/md";
-
-const initialTicketGridData = [
-  {
-    id: 1,
-    date: "12-02-2025",
-    session: "MOR(13:00)",
-    lotteryName: "DEAR",
-    prizes: [
-      {
-        prize: "1st Prize ₹1 Crore/-",
-        numbers: ["56E 81013"],
-      },
-      {
-        prize: "2nd Prize ₹9000/-",
-        numbers: [
-          "13142, 13458, 18574, 29786, 30127, 34518, 45754, 52222, 85210, 94495",
-        ],
-      },
-      {
-        prize: "3rd Prize ₹450/-",
-        numbers: ["0941, 1771, 4993, 5126, 5273, 5968, 6065, 7481, 7502, 9372"],
-      },
-      {
-        prize: "4th Prize ₹250/-",
-        numbers: ["0153, 0967, 2747, 4677, 5062, 6075, 7705, 7846, 8720, 8536"],
-      },
-      {
-        prize: "5th Prize ₹120/-",
-        numbers: [
-          "0132, 1082, 2246, 3541, 4589, 7049, 7696, 8621, 9196, 9295, 0668, 1222, 2473, 3548, 5050, 7169, 7832, 8889, 9235, 0829, 1336, 2585, 3754, 5380, 7295, 0132, 1082, 2246, 3541, 4589, 7049, 7696, 8621, 9196, 9295, 0668, 1222, 2473, 3548, 5050, 7169, 7832, 8889, 9235, 0829, 1336, 2585, 3754, 5380, 7295, 0132, 1082, 2246, 3541, 4589, 7049, 7696, 8621, 9196, 9295, 0668, 1222, 2473, 3548, 5050, 7169, 7832, 8889, 9235, 0829, 1336, 2585, 3754, 5380, 7295, 0132, 1082, 2246, 3541, 4589, 7049, 7696, 8621, 9196, 9295, 0668, 1222, 2473, 3548, 5050, 7169, 7832, 8889, 9235, 0829, 1336, 2585, 3754, 5380, 7295",
-        ],
-      },
-    ],
-  },
-];
+import { IoMdClose } from "react-icons/io";
+import ResultHeader from "@/images/result-header.png";
 
 const lotteryData = ["DEAR", "NAGALAND"];
 
 export default function Home() {
   const [popupOpen, setPopupOpen] = useState(false);
-  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [showWinners, setShowWinners] = useState(false);
+
+  const [resultData, setResultData] = useState([]);
   const [update, setUpdate] = useState(false);
-  const [ticketGridData, setTicketGridData] = useState(initialTicketGridData);
-  const [prizeItem, setPrizeItem] = useState("");
+  const [winnerData, setWinnerData] = useState([]);
+
   const tenInputs = Array.from({ length: 10 }, (_, i) => i + 1); // Create an array of numbers 1 to 10
   const hundredInputs = Array.from({ length: 100 }, (_, i) => i + 1); // Create an array of numbers 1 to 100
-  const [inputData, setInputData] = useState("");
 
-  const handleDropdownChange = (e) => {};
-
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    if (/^\d*$/.test(value) && value.length <= 5) {
-      setInputData((prevData) => ({
+
+    if (
+      (name.startsWith("secondPrize") ||
+        name.startsWith("thirdPrize") ||
+        name.startsWith("fourthPrize") ||
+        name.startsWith("fifthPrize")) &&
+      /^\d*$/.test(value) &&
+      value.length <= 5
+    ) {
+      setResultData((prevData) => ({
         ...prevData,
-        [name]: value, // Update the specific field based on the input's name
+        [name]: value,
+      }));
+    } else {
+      setResultData((prevData) => ({
+        ...prevData,
+        [name]: value,
       }));
     }
   };
@@ -74,62 +50,92 @@ export default function Home() {
 
   const handleShowWinners = (items) => {
     setShowWinners(!showWinners);
-    setPrizeItem(items);
+    setWinnerData(items);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent default form submission behavior
-    const combinedData = {
-      ...inputData,
+
+    const getPrizeNumbers = (prefix) => {
+      const prizeNumbers = [];
+      for (let i = 1; i <= 10; i++) {
+        const prizeValue = resultData[`${prefix}${i}`];
+        if (prizeValue) {
+          prizeNumbers.push(prizeValue);
+        }
+      }
+      return prizeNumbers;
     };
 
-    setTicketGridData((prevData) => [...prevData, combinedData]);
+    const getFifthPrizeNumbers = (prefix) => {
+      const prizeNumbers = [];
+      for (let i = 1; i <= 100; i++) {
+        const prizeValue = resultData[`${prefix}${i}`];
+        if (prizeValue) {
+          prizeNumbers.push(prizeValue);
+        }
+      }
+      return prizeNumbers;
+    };
+
+    const generateTicketRef = () => {
+      const now = new Date();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      const timeString = now.getTime().toString().slice(-6);
+      return `${month}${day}${timeString}`;
+    };
+
+    const combinedData = {
+      id: generateTicketRef(),
+      date: resultData.date,
+      session: resultData.session,
+      lotteryName: resultData.ticket,
+      firstPrize: resultData.firstPrize,
+      prizes: [
+        {
+          prize: "2nd Prize 9000/- for Seller ₹500/-",
+          numbers: getPrizeNumbers("secondPrize"),
+        },
+        {
+          prize: "3rd Prize 450/- for Seller ₹50/-",
+          numbers: getPrizeNumbers("thirdPrize"),
+        },
+        {
+          prize: "4th Prize ₹250/- for Seller ₹20/--",
+          numbers: getPrizeNumbers("fourthPrize"),
+        },
+        {
+          prize: "5th Prize ₹120/- for Seller ₹10/-",
+          numbers: getFifthPrizeNumbers("fifthPrize"),
+        },
+      ],
+    };
+    setResultData((prevData) =>
+      Array.isArray(prevData) ? [...prevData, combinedData] : [combinedData]
+    );
     setPopupOpen(false);
   };
 
-  const handleEditTicketPrize = (item) => {
-    setDropdownData({
-      date: item.date,
-      session: item.session,
-      day: item.day,
-    });
-
-    // Helper function to generate prize fields dynamically
-    const generatePrizeData = (prefix, count) => {
-      const prizeData = {};
-      for (let i = 1; i <= count; i++) {
-        prizeData[`${prefix}${i}`] = item[`${prefix}${i}`];
-      }
-      return prizeData;
-    };
-
-    // Set input data dynamically for each prize category
-    setInputData({
-      firstPrize: item.firstPrize,
-
-      ...generatePrizeData("secondPrize", 10),
-      ...generatePrizeData("thirdPrize", 10),
-      ...generatePrizeData("fourthPrize", 10),
-      ...generatePrizeData("fifthPrize", 100),
-    });
-
-    setPopupOpen(!popupOpen);
-    setUpdate(true);
-  };
-
-  const handleDeleteClick = (props) => {
-    setIsDeletePopupOpen(!isDeletePopupOpen);
-  };
-
-  const handleCancelDelete = () => {
-    setIsDeletePopupOpen(!isDeletePopupOpen);
-  };
-
-  const handleDownloadPDF = () => {};
-
   return (
     <div className="p-5">
-      <AddButton title="Winning" btnText="+ Add" onAdd={handleOpenPopup} />
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-xl font-bold">Results</h1>
+        <div className="flex justify-between items-center gap-4">
+          <select
+            name="filter"
+            className="px-2 cursor-pointer font-bold py-2 text-sm bg-white border border-gray-200 rounded-lg"
+          >
+            {masterData.masterDropdown.filterData.map((status, index) => (
+              <option key={index} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <AddButton onAdd={handleOpenPopup} />
 
       <div className="p-0 sm:p-2 mt-4 sm:border-2 border-2 border-gray-200 border-dashed rounded-lg">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -143,37 +149,41 @@ export default function Home() {
                 ))}
               </tr>
             </thead>
-            {ticketGridData?.length > 0 ? (
+            {resultData?.length > 0 ? (
               <tbody>
-                {ticketGridData.map((item, index) => (
+                {resultData?.map((item, index) => (
                   <tr
-                    key={item.id}
+                    key={index}
                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <th
                       scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      className="px-6 py-2 text font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
                       {index + 1}
                     </th>
                     <td
-                      className="px-6 py-4 text-blue-500 underline cursor-pointer"
-                      onClick={() => handleShowWinners(item.prizes)}
+                      className="px-6 py-2 text text-blue-500 underline cursor-pointer"
+                      onClick={() => handleShowWinners(item)}
                     >
-                      RESULT
+                      Show Result - {index + 1}
                     </td>
-                    <td className="px-6 py-4">{item.date}</td>
-                    <td className="px-6 py-4">{item.lotteryName}</td>
-                    <td className="px-6 py-4">{item.session}</td>
-                    <td className="px-6 py-4 flex space-x-2">
-                      <MdEditDocument
-                        className="text-blue-500 cursor-pointer text-xl hover:text-blue-700"
-                        onClick={() => handleEditTicketPrize(item)}
-                      />
-                      <MdDelete
-                        className="text-red-500 cursor-pointer text-xl hover:text-red-700"
-                        onClick={() => handleDeleteClick(item.id)}
-                      />
+                    <td className="px-6 py-2 text">{item.date}</td>
+                    <td className="px-6 py-2 text">
+                      {item.lotteryName} LOTTERY
+                    </td>
+                    <td className="px-6 py-2 text">{item.session}</td>
+                    <td
+                      className="px-6 py-2 text text-blue-500 underline cursor-pointer"
+                      // onClick={handleDownloadPDF}
+                    >
+                      Download
+                    </td>
+                    <td
+                      className="px-6 py-2 text flex space-x-2 text-blue-500 underline cursor-pointer"
+                      // onClick={handleEditTicketPrize}
+                    >
+                      Edit Result
                     </td>
                   </tr>
                 ))}
@@ -216,7 +226,7 @@ export default function Home() {
                   <input
                     type="date"
                     name="date"
-                    onChange={handleDropdownChange}
+                    onChange={handleChange}
                     className="w-full px-4 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                   />
                 </div>
@@ -224,7 +234,8 @@ export default function Home() {
                   <label className="text-sm font-semibold">Session</label>
                   <select
                     name="session"
-                    onChange={handleDropdownChange}
+                    onChange={handleChange}
+                    value={resultData?.session}
                     className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700 focus:outline-none"
                   >
                     <option>---</option>
@@ -236,10 +247,10 @@ export default function Home() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-semibold">Day</label>
+                  <label className="text-sm font-semibold">Scheme</label>
                   <select
                     name="ticket"
-                    onChange={handleInputChange}
+                    onChange={handleChange}
                     className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700 focus:outline-none"
                   >
                     <option>---</option>
@@ -253,13 +264,13 @@ export default function Home() {
               </div>
 
               <h3 className="text-sm font-semibold">1st Prize </h3>
-              <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 !mt-1 gap-2">
+              <div className="grid !mt-1 gap-2">
                 <input
-                  type="number"
+                  type="text"
                   name="firstPrize"
                   placeholder="1st"
-                  value={inputData?.firstPrize}
-                  onChange={handleInputChange}
+                  value={resultData?.firstPrize}
+                  onChange={handleChange}
                   className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                 />
               </div>
@@ -272,8 +283,8 @@ export default function Home() {
                     type="number"
                     name={`secondPrize${num}`}
                     placeholder={`${num}`}
-                    onChange={handleInputChange}
-                    value={inputData[`secondPrize${num}`] || ""}
+                    onChange={handleChange}
+                    value={resultData[`secondPrize${num}`] || ""}
                     className={
                       "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
@@ -289,8 +300,8 @@ export default function Home() {
                     type="number"
                     name={`thirdPrize${num}`}
                     placeholder={`${num}`}
-                    onChange={handleInputChange}
-                    value={inputData[`thirdPrize${num}`] || ""}
+                    onChange={handleChange}
+                    value={resultData[`thirdPrize${num}`] || ""}
                     className={
                       "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
@@ -306,8 +317,8 @@ export default function Home() {
                     type="number"
                     name={`fourthPrize${num}`}
                     placeholder={`${num}`}
-                    onChange={handleInputChange}
-                    value={inputData[`fourthPrize${num}`] || ""}
+                    onChange={handleChange}
+                    value={resultData[`fourthPrize${num}`] || ""}
                     className={
                       "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
@@ -323,8 +334,8 @@ export default function Home() {
                     type="number"
                     name={`fifthPrize${num}`}
                     placeholder={`${num}`}
-                    onChange={handleInputChange}
-                    value={inputData[`fifthPrize${num}`] || ""}
+                    onChange={handleChange}
+                    value={resultData[`fifthPrize${num}`] || ""}
                     className={
                       "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
@@ -344,7 +355,7 @@ export default function Home() {
                 onClick={handleSubmit}
                 className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
               >
-                {update ? "Update Tickets" : "Add Tickets"}
+                {update ? "Update Result" : "Add Result"}
               </button>
             </div>
           </div>
@@ -352,67 +363,59 @@ export default function Home() {
       )}
 
       {showWinners && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white m-2 text-gray-900 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
-            <div className="absolute top-4 right-4 flex space-x-2">
-              <button
-                className="cursor-pointer text-xl"
-                onClick={handleDownloadPDF}
-              >
-                <IoMdDownload />
-              </button>
+        <div
+          onClick={handleShowWinners}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        >
+          <div className="bg-white m-2 text-gray-900 border-2 border-cyan-800 rounded-lg shadow-lg w-full max-w-[210mm] max-h-[90vh] overflow-y-auto relative">
+            {winnerData?.map((data) => (
+              <div key={data.id} className="relative">
+                {/* Result Header Image */}
+                <Image
+                  alt="Result"
+                  src={ResultHeader}
+                  className="w-full h-auto object-cover rounded-t-lg"
+                />
 
-              <button
-                className="cursor-pointer text-xl"
-                onClick={handleShowWinners}
-              >
-                <IoMdClose />
-              </button>
-            </div>
-
-            <div className="bg-gray-50 text-center p-8 flex flex-col items-center justify-center">
-              <h1 className="text-2xl font-bold skew-y-3">
-                LMS STATE LOTTERIES
-              </h1>
-              <div className="text-lg font-extrabold mt-4">
-                <p>session RESULT date</p>
-                <p className="bg-amber-300 max-w-24 text-base mx-auto rounded">
-                  11:55 AM
-                </p>
-              </div>
-            </div>
-
-            <div className="text-center p-3 md:p-5">
-              {ticketGridData.map((ticket) => (
-                <div key={ticket.id}>
-                  {ticket.prizes.map((prize, index) => (
-                    <div key={index}>
-                      <h3 className="text-base mt-6 mb-2 font-bold">
-                        {prize.prize}
-                      </h3>
-                      <div className="grid grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2">
-                        {prize.numbers[0]
-                          .split(",")
-                          .map((number, numberIndex) => (
-                            <span
-                              key={numberIndex}
-                              className="text-sm p-1 bg-gray-100 rounded"
-                            >
-                              {number.trim()}
-                            </span>
-                          ))}
+                {/* Prizes and Numbers Section */}
+                <div className="text-center px-5 pt-2 overflow-y-auto">
+                  <div key={data.id}>
+                    {data?.prizes?.map((prize, index) => (
+                      <div key={index}>
+                        <h3 className="text-xl m-3 font-bold">{prize.prize}</h3>
+                        <div className="grid grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2 mb-8">
+                          {prize.numbers[0]
+                            ?.split(",")
+                            ?.map((number, numberIndex) => (
+                              <span
+                                key={numberIndex}
+                                className="text-sm p-1 bg-gray-100 rounded"
+                              >
+                                {number.trim()}
+                              </span>
+                            ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
+
+                {/* Footer Section */}
+                <div className="px-4 py-2 flex justify-between bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400">
+                  <h1 className="text-2xl text-amber-300 font-bold">
+                    {data.date}
+                  </h1>
+                  <h1 className="text-2xl text-amber-300 font-bold">
+                    {data.session}
+                  </h1>
+                  <h1 className="text-2xl text-amber-300 font-bold">
+                    {data.date}
+                  </h1>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      )}
-
-      {isDeletePopupOpen && (
-        <DeletePopup isOpen={isDeletePopupOpen} onClose={handleCancelDelete} />
       )}
     </div>
   );
