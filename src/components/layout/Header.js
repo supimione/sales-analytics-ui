@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Admin from "@/images/user.png";
@@ -9,22 +9,26 @@ import { FaKey, FaSignOutAlt, FaSun, FaMoon } from "react-icons/fa";
 
 export default function Header({ sidebarToggle }) {
   const dropdownRef = useRef(null);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
-  const toggleUserMenu = () => {
-    setIsUserMenuOpen(!isUserMenuOpen);
-  };
+  // Memoized function to toggle user menu
+  const toggleUserMenu = useCallback(() => {
+    setIsUserMenuOpen((prev) => !prev);
+  }, []);
 
-  const closeUserMenu = (e) => {
+  // Memoized function to toggle dark mode
+  const toggleDarkMode = useCallback(() => {
+    setIsDarkMode((prev) => !prev);
+  }, []);
+
+  // Handle click outside to close user menu
+  const closeUserMenu = useCallback((e) => {
     if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
       setIsUserMenuOpen(false);
     }
-  };
-
-  const toggleDarkMode = () => {
-    setIsDarkMode((prev) => !prev);
-  };
+  }, []);
 
   useEffect(() => {
     if (isUserMenuOpen) {
@@ -33,15 +37,11 @@ export default function Header({ sidebarToggle }) {
       document.removeEventListener("click", closeUserMenu);
     }
 
-    // Toggle dark mode class on the body
-    if (isDarkMode) {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
+    // Toggle dark mode class on body
+    document.body.classList.toggle("dark", isDarkMode);
 
     return () => document.removeEventListener("click", closeUserMenu);
-  }, [isUserMenuOpen, isDarkMode]);
+  }, [isUserMenuOpen, isDarkMode, closeUserMenu]);
 
   return (
     <nav className="w-full">
@@ -72,7 +72,7 @@ export default function Header({ sidebarToggle }) {
         <div className="flex">
           <button
             onClick={toggleDarkMode}
-            className="p-2 text-gray-600 dark:text-gray-200 mt-0.5 mr-3" // Added margin-right (gap)
+            className="p-2 text-gray-600 dark:text-gray-200 mt-0.5 mr-3"
           >
             {isDarkMode ? (
               <FaSun className="w-5 h-5" />

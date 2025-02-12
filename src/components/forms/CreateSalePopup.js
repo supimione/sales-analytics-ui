@@ -7,11 +7,12 @@ import masterData from "@/jsonData/masterData.json";
 export default function CreateSalePopup({
   isOpen,
   title,
-  ticketRef = true,
   btnText,
   onClose,
   onCreate,
-  initialValues = null, // Add initialValues for edit
+  width,
+  ticketRef = true,
+  initialValues = null,
 }) {
   const [formData, setFormData] = useState({
     ticketRef: "",
@@ -19,16 +20,16 @@ export default function CreateSalePopup({
     customer: "",
     session: "",
     ticket: "",
-    from: null,
-    to: null,
-    count: null,
-    same: null,
-    ticketQty: null,
-    price: null,
+    from: "",
+    to: "",
+    count: "",
+    same: "",
+    ticketQty: "",
+    price: "",
   });
 
-  const CustomerNames = ["Rahit Das - rahit123", "Suman Roy - suman123"];
   const lotteryData = ["DEAR", "NAGALAND"];
+  const CustomerNames = ["Rahit Das - rahit123", "Suman Roy - suman123"];
 
   // If we are editing, populate the formData with initialValues
   useEffect(() => {
@@ -75,7 +76,7 @@ export default function CreateSalePopup({
     }));
   };
 
-  const validateDistributorForm = () => {
+  const validateForData = () => {
     if (
       !formData.date ||
       !formData.customer ||
@@ -93,7 +94,7 @@ export default function CreateSalePopup({
   };
 
   const handleSubmit = () => {
-    if (validateDistributorForm()) {
+    if (validateForData()) {
       onCreate(formData); // Pass the form data back to the parent
     }
   };
@@ -102,7 +103,9 @@ export default function CreateSalePopup({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white text-gray-900 p-4 m-2 rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div
+        className={`bg-white m-2 text-gray-900 p-4 rounded-lg shadow-lg w-full ${width} max-h-[90vh] overflow-y-auto`}
+      >
         <div className="flex justify-between items-center bg-blue-600 text-white p-4 rounded-t-lg">
           <h2 className="text-xl font-bold">{title}</h2>
           <IoMdClose onClick={onClose} className="cursor-pointer text-xl" />
@@ -119,12 +122,12 @@ export default function CreateSalePopup({
                   Ticket ref no.
                 </label>
                 <input
+                  readOnly
                   type="text"
                   name="ticketRef"
                   value={formData.ticketRef}
                   onChange={handleInputChange}
                   className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700 focus:outline-none"
-                  readOnly
                 />
               </div>
             )}
@@ -189,12 +192,11 @@ export default function CreateSalePopup({
               </select>
             </div>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div>
               <label className="mb-2 text-sm font-semibold">From *</label>
               <input
-                type="text"
+                type="number"
                 name="from"
                 value={formData.from}
                 onChange={handleInputChange}
@@ -204,7 +206,7 @@ export default function CreateSalePopup({
             <div>
               <label className="mb-2 text-sm font-semibold">To *</label>
               <input
-                type="text"
+                type="number"
                 name="to"
                 value={formData.to}
                 onChange={handleInputChange}
@@ -214,12 +216,12 @@ export default function CreateSalePopup({
             <div>
               <label className="mb-2 text-sm font-semibold">Count</label>
               <input
-                type="text"
-                name="ticketQty"
-                value={formData.ticketQty}
+                disabled
+                type="number"
+                name="count"
+                defaultValue={formData.count}
                 onChange={handleInputChange}
                 className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                readOnly
               />
             </div>
             <div>
@@ -241,23 +243,22 @@ export default function CreateSalePopup({
             <div>
               <label className="mb-2 text-sm font-semibold">Ticket Qt.</label>
               <input
-                type="text"
+                type="number"
                 name="ticketQty"
                 value={formData.ticketQty}
                 onChange={handleInputChange}
                 className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                readOnly
               />
             </div>
             <div>
               <label className="mb-2 text-sm font-semibold">Price</label>
               <input
+                disabled
                 type="text"
                 name="price"
-                value={formData.price}
+                defaultValue={formData.price}
                 onChange={handleInputChange}
                 className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                readOnly
               />
             </div>
           </div>

@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import PageHeader from "@/components/layout/PageHeader";
+import { useState } from "react";
+import AddButton from "@/components/layout/AddButton";
 import Table from "@/components/tables/Table";
-import Modal from "@/components/modal/Modal";
-import DeletePopup from "@/components/forms/DeletePopup";
+import CreateSchemeModal from "@/components/forms/CreateSchemeModal";
+import DeletePopup from "@/components/modal/DeletePopup";
 import masterData from "@/jsonData/masterData.json";
 import {
   FaRegClipboard,
@@ -15,172 +15,81 @@ import {
 } from "react-icons/fa";
 
 const tabData = [
-  {
-    title: "Schemes",
-    icon: FaRegClipboard, // Represents planning or documentation for schemes
-    tabIndex: 0,
-    tableHeader: masterData.tableHeader.scheme,
-  },
-  {
-    title: "Super Stockist",
-    icon: FaTruck, // Represents distribution and delivery
-    tabIndex: 1,
-    tableHeader: masterData.tableHeader.superStockist,
-  },
-  {
-    title: "Stockist",
-    icon: FaWarehouse, // Represents stock storage or inventory
-    tabIndex: 2,
-    tableHeader: masterData.tableHeader.stockist,
-  },
-  {
-    title: "Retailer",
-    icon: FaStore, // Represents retail business or stores
-    tabIndex: 3,
-    tableHeader: masterData.tableHeader.retailer,
-  },
-  {
-    title: "Users",
-    icon: FaUsers, // Represents a group of users/accounts
-    tabIndex: 4,
-    tableHeader: masterData.tableHeader.users,
-  },
+  { title: "Schemes", icon: FaRegClipboard, tabId: 0 },
+  { title: "Super Stockist", icon: FaTruck, tabId: 1 },
+  { title: "Stockist", icon: FaWarehouse, tabId: 2 },
+  { title: "Retailer", icon: FaStore, tabId: 3 },
+  { title: "Users", icon: FaUsers, tabId: 4 },
 ];
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState(0);
-
-  const [schemePopup, setSchemePopup] = useState(false);
-  const [stockistPopup, setStockistPopup] = useState(null);
-
-  const [tableHeader, setTableHeader] = useState(tabData[0].tableHeader);
-  const [tableData, setTableData] = useState([]);
-
-  const [showDeletePopup, setShowDeletePopup] = useState(false);
-  const [deletingItemId, setDeletingItemId] = useState(null);
-  const [deletingItemType, setDeletingItemType] = useState("");
-
+  const [addPopupOpen, setAddPopupOpen] = useState(false);
+  const [schemeList, setSchemeList] = useState([]);
   const [editScheme, setEditScheme] = useState(null);
-  const [schemeFormData, setSchemeFormData] = useState("");
-  const [ticketData, setTicketData] = useState([]);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [deletingItem, setDeletingItem] = useState(null);
 
-  const [editStockist, setEditStockist] = useState(null);
-  const [stockistFormData, setStockistFormData] = useState([]);
-  const [distributorData, setDistributorData] = useState([]);
-
-  useEffect(() => {
-    setTableHeader(
-      tabData.find((tab) => tab.tabIndex === activeTab)?.tableHeader ||
-        tabData[0].tableHeader
-    );
-  }, [activeTab]);
-
-  const activeTabHeader = tabData.find((tab) => tab.tabIndex === activeTab);
+  const activeTabHeader = tabData.find((tab) => tab.tabId === activeTab);
   if (!activeTabHeader) return null;
 
-  const handleAddPopup = (tabIndex) => {
-    if (tabIndex === 0) {
-      setSchemePopup(!schemePopup);
-    } else {
-      setStockistPopup(!stockistPopup);
-    }
+  const handleAddPopup = () => {
+    setAddPopupOpen(!addPopupOpen);
+    setEditScheme(null);
   };
 
-  const handleEdit = (id, tabIndex) => {
-    if (tabIndex === 0) {
-      const schemeToEdit = ticketData.find((item) => item.id === id);
-      if (schemeToEdit) {
-        setSchemeFormData(schemeToEdit);
-        setEditScheme(id);
-        setSchemePopup(true);
-      }
-    } else {
-      const distributorToEdit = distributorData.find((item) => item.id === id);
-      if (distributorToEdit) {
-        setStockistFormData(distributorToEdit);
-        setEditStockist(id);
-        setStockistPopup(true);
-      }
-    }
+  const handleEdit = (id) => {
+    const itemToEdit = schemeList.find((item) => item.id === id);
+    setEditScheme(itemToEdit);
+    setAddPopupOpen(true);
   };
 
-  const handleDelete = (id, tabIndex) => {
-    setDeletingItemId(id);
-    setDeletingItemType(type);
-    setShowDeletePopup(true);
+  const handleDelete = (id) => {
+    setDeletingItem(id);
+    setShowDeletePopup(false);
   };
 
-  const handleSchemeInputChange = (e) => {
-    setSchemeFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleCancelDelete = () => {
+    setShowDeletePopup(false);
   };
 
-  const handleSubmitSchemeForm = (e) => {
-    e.preventDefault();
-
-    if (schemeFormData.schemeName && schemeFormData.status) {
-      if (editScheme) {
-        updateScheme();
-      } else {
-        addSchemes();
-      }
-      setSchemePopup(false);
-    } else {
-      alert("Please enter a scheme name.");
-    }
-  };
-
-  const addSchemes = () => {
-    setSchemeFormData((prevData) => [
-      ...prevData,
-      { ...schemeFormData, id: new Date().getTime() }, // Use timestamp as unique ID
-    ]);
-  };
-
-  const updateScheme = () => {
-    setTicketData((prevData) =>
-      prevData.map((item) =>
-        item.id === editScheme ? { ...item, ...schemeFormData } : item
-      )
+  const handleConfirmDelete = () => {
+    setSchemeList((prevData) =>
+      prevData.filter((item) => item.id !== deletingItem)
     );
+    setShowDeletePopup(false);
   };
 
-  const confirmDelete = () => {
-    if (deletingItemType === "Distributer") {
-      setDistributorData((prevData) =>
-        prevData.filter((item) => item.id !== deletingItemId)
+  const handleCreateScheme = (newSchemeData) => {
+    if (editScheme) {
+      setSchemeList((prevData) =>
+        prevData.map((item) =>
+          item.id === editScheme.id ? { ...item, ...newSchemeData } : item
+        )
       );
-    } else if (deletingItemType === "Tickets") {
-      setTicketData((prevData) =>
-        prevData.filter((item) => item.id !== deletingItemId)
-      );
+    } else {
+      setSchemeList((prevData) => [
+        ...prevData,
+        { ...newSchemeData, id: prevData.length + 1 },
+      ]);
     }
-    setShowDeletePopup(false);
-    resetDeleteState();
-  };
-
-  const cancelDelete = () => {
-    setShowDeletePopup(false);
-    resetDeleteState();
-  };
-
-  const resetDeleteState = () => {
-    setDeletingItemId(null);
-    setDeletingItemType("");
+    setAddPopupOpen(false);
+    setEditScheme(null);
   };
 
   return (
     <>
-      <div className="px-4 py-5">
+      <div className="px-5 py-5">
         <div className="flex border-b">
           {tabData.map((tab, index) => (
             <button
-              key={index}
+              key={tab.tabId}
               className={`py-2 px-4 text-sm ${
-                activeTab === index
+                activeTab === tab.tabId
                   ? "border-b-2 border-blue-500 text-blue-500"
                   : "text-gray-600 hover:text-blue-500"
               }`}
-              onClick={() => setActiveTab(index)}
+              onClick={() => setActiveTab(tab.tabId)}
             >
               <div className="flex items-center justify-center">
                 <tab.icon className="text-sm mr-2" />
@@ -192,83 +101,29 @@ export default function Home() {
       </div>
 
       <div className="px-5">
-        <PageHeader
-          title={activeTabHeader.title}
-          btnText="+ Add"
-          onAdd={() => handleAddPopup(activeTabHeader.tabIndex)}
-        />
+        <AddButton onAdd={handleAddPopup} />
 
         <Table
-          headers={tableHeader}
-          data={schemeFormData}
-          onEdit={(id) => handleEdit(id, activeTabHeader.tabIndex)}
-          onDelete={(id) => handleDelete(id, activeTabHeader.tabIndex)}
+          headers={masterData.tableHeader.scheme}
+          data={schemeList}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
         />
 
-        {activeTab === 0 && (
-          <Modal
-            title="Add Scheme"
-            isOpen={schemePopup}
-            onClose={() => handleAddPopup(activeTabHeader.tabIndex)}
-            width="max-w-2xl"
-          >
-            <form onSubmit={handleSubmitSchemeForm}>
-              <p className="mb-4 text-xs text-rose-400">
-                The fields marked with * are mandatory.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 mb-2">
-                <div>
-                  <label className="mb-2 text-xs font-semibold">
-                    Scheme Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="schemeName"
-                    autoComplete="off"
-                    value={schemeFormData.schemeName}
-                    onChange={handleSchemeInputChange}
-                    className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 text-xs font-semibold">Status *</label>
-                  <select
-                    name="status"
-                    value={schemeFormData.status}
-                    onChange={handleSchemeInputChange}
-                    className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700"
-                  >
-                    <option value="">---</option>
-                    {masterData.masterDropdown.status.map((status, index) => (
-                      <option key={index} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="flex justify-end bg-gray-100 p-3 rounded-b-lg space-x-2">
-                <button
-                  onClick={() => handleAddPopup(activeTabHeader.tabIndex)}
-                  className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          </Modal>
-        )}
+        <CreateSchemeModal
+          isOpen={addPopupOpen}
+          width="max-w-2xl"
+          title={editScheme ? "Update Scheme" : "Add Scheme"}
+          btnText={editScheme ? "Update Changes" : "Save Changes"}
+          onClose={handleAddPopup}
+          onCreate={handleCreateScheme}
+          initialValues={editScheme}
+        />
 
         <DeletePopup
           isOpen={showDeletePopup}
-          onCancel={cancelDelete}
-          onConfirm={confirmDelete}
+          onCancel={handleCancelDelete}
+          onConfirm={handleConfirmDelete}
         />
       </div>
     </>

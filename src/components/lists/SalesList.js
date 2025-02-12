@@ -6,6 +6,7 @@ import { MdDelete, MdEditDocument } from "react-icons/md";
 import masterData from "@/jsonData/masterData.json";
 
 export default function SalesList({
+  title,
   showHeader = true,
   ShowEdit = true,
   tableHeader,
@@ -30,9 +31,10 @@ export default function SalesList({
 
   return (
     <>
-      <div className="p-0 sm:p-2 mt-4 sm:border-2 border-gray-100 border-dashed rounded-lg">
-        {showHeader && (
-          <div className="flex justify-between items-center mb-4">
+      {showHeader && (
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-xl font-bold">{title}</h1>
+          <div className="flex justify-between items-center gap-4">
             <select
               name="filter"
               className="px-2 cursor-pointer font-bold py-2 text-sm bg-white border border-gray-200 rounded-lg"
@@ -43,8 +45,6 @@ export default function SalesList({
                 </option>
               ))}
             </select>
-
-            {/* Export Excel Button */}
             <button
               onClick={generateExcel}
               className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-md focus:outline-none flex items-center"
@@ -53,8 +53,10 @@ export default function SalesList({
               Export
             </button>
           </div>
-        )}
+        </div>
+      )}
 
+      <div className="mt-4 sm:border-2 border-gray-100 border-dashed rounded-lg">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

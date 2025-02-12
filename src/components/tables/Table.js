@@ -3,7 +3,7 @@ import { MdDelete, MdEditDocument } from "react-icons/md";
 
 const Table = ({ headers, data, onEdit, onDelete }) => {
   return (
-    <div className="p-0 sm:p-2 mt-4 sm:border-2 border-gray-100 border-dashed rounded-lg">
+    <div className="p-0 sm:border-2 border-gray-100 border-dashed rounded-lg">
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

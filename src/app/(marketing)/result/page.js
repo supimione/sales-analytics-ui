@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import PageHeader from "@/components/layout/PageHeader";
-import DeletePopup from "@/components/forms/DeletePopup";
+import AddButton from "@/components/layout/AddButton";
+import DeletePopup from "@/components/modal/DeletePopup";
 import masterData from "@/jsonData/masterData.json";
 import { IoMdClose, IoMdDownload } from "react-icons/io";
 import { MdDelete, MdEditDocument } from "react-icons/md";
@@ -35,7 +35,7 @@ const initialTicketGridData = [
       {
         prize: "5th Prize ₹120/-",
         numbers: [
-          "0132, 1082, 2246, 3541, 4589, 7049, 7696, 8621, 9196, 9295, 0668, 1222, 2473, 3548, 5050, 7169, 7832, 8889, 9235, 0829, 1336, 2585, 3754, 5380, 7295",
+          "0132, 1082, 2246, 3541, 4589, 7049, 7696, 8621, 9196, 9295, 0668, 1222, 2473, 3548, 5050, 7169, 7832, 8889, 9235, 0829, 1336, 2585, 3754, 5380, 7295, 0132, 1082, 2246, 3541, 4589, 7049, 7696, 8621, 9196, 9295, 0668, 1222, 2473, 3548, 5050, 7169, 7832, 8889, 9235, 0829, 1336, 2585, 3754, 5380, 7295, 0132, 1082, 2246, 3541, 4589, 7049, 7696, 8621, 9196, 9295, 0668, 1222, 2473, 3548, 5050, 7169, 7832, 8889, 9235, 0829, 1336, 2585, 3754, 5380, 7295, 0132, 1082, 2246, 3541, 4589, 7049, 7696, 8621, 9196, 9295, 0668, 1222, 2473, 3548, 5050, 7169, 7832, 8889, 9235, 0829, 1336, 2585, 3754, 5380, 7295",
         ],
       },
     ],
@@ -129,7 +129,7 @@ export default function Home() {
 
   return (
     <div className="p-5">
-      <PageHeader title="Winning" btnText="+ Add" onAdd={handleOpenPopup} />
+      <AddButton title="Winning" btnText="+ Add" onAdd={handleOpenPopup} />
 
       <div className="p-0 sm:p-2 mt-4 sm:border-2 border-2 border-gray-200 border-dashed rounded-lg">
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
