@@ -14,8 +14,9 @@ export default function Home() {
   const [showWinners, setShowWinners] = useState(false);
 
   const [resultData, setResultData] = useState([]);
+  console.log(resultData, "resultData");
   const [update, setUpdate] = useState(false);
-  const [winnerData, setWinnerData] = useState([]);
+  const [winnerData, setWinnerData] = useState("");
 
   const tenInputs = Array.from({ length: 10 }, (_, i) => i + 1); // Create an array of numbers 1 to 10
   const hundredInputs = Array.from({ length: 100 }, (_, i) => i + 1); // Create an array of numbers 1 to 100
@@ -48,9 +49,9 @@ export default function Home() {
     setUpdate(false);
   };
 
-  const handleShowWinners = (items) => {
+  const handleShowWinners = (data) => {
     setShowWinners(!showWinners);
-    setWinnerData(items);
+    setWinnerData(resultData.filter((item) => item.id === data?.id)); // Corrected the filter condition
   };
 
   const handleSubmit = (e) => {
@@ -117,6 +118,21 @@ export default function Home() {
     setPopupOpen(false);
   };
 
+  // Validation function to check if all required fields are filled
+  const isFormValid = () => {
+    return (
+      resultData.date &&
+      resultData.session &&
+      resultData.ticket &&
+      resultData.firstPrize &&
+      // Check if at least one prize is filled
+      (resultData.secondPrize1 ||
+        resultData.thirdPrize1 ||
+        resultData.fourthPrize1 ||
+        resultData.fifthPrize1)
+    );
+  };
+
   return (
     <div className="p-5">
       <div className="flex justify-between items-center mb-4">
@@ -169,9 +185,7 @@ export default function Home() {
                       Show Result - {index + 1}
                     </td>
                     <td className="px-6 py-2 text">{item.date}</td>
-                    <td className="px-6 py-2 text">
-                      {item.lotteryName} LOTTERY
-                    </td>
+                    <td className="px-6 py-2 text">{item.lotteryName}</td>
                     <td className="px-6 py-2 text">{item.session}</td>
                     <td
                       className="px-6 py-2 text text-blue-500 underline cursor-pointer"
@@ -179,11 +193,13 @@ export default function Home() {
                     >
                       Download
                     </td>
-                    <td
-                      className="px-6 py-2 text flex space-x-2 text-blue-500 underline cursor-pointer"
-                      // onClick={handleEditTicketPrize}
-                    >
-                      Edit Result
+                    <td className="px-6 py-2 text flex space-x-2 text-blue-500">
+                      <button
+                        // onClick={handleEditTicketPrize}
+                        className="px-4 py-1 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all duration-300"
+                      >
+                        Edit
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -226,6 +242,7 @@ export default function Home() {
                   <input
                     type="date"
                     name="date"
+                    value={resultData?.date || ""}
                     onChange={handleChange}
                     className="w-full px-4 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                   />
@@ -268,8 +285,7 @@ export default function Home() {
                 <input
                   type="text"
                   name="firstPrize"
-                  placeholder="1st"
-                  value={resultData?.firstPrize}
+                  value={resultData?.firstPrize || ""}
                   onChange={handleChange}
                   className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                 />
@@ -353,6 +369,7 @@ export default function Home() {
               </button>
               <button
                 onClick={handleSubmit}
+                // disabled={!isFormValid()}
                 className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
               >
                 {update ? "Update Result" : "Add Result"}
@@ -368,25 +385,26 @@ export default function Home() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
         >
           <div className="bg-white m-2 text-gray-900 border-2 border-cyan-800 rounded-lg shadow-lg w-full max-w-[210mm] max-h-[90vh] overflow-y-auto relative">
-            {winnerData?.map((data) => (
-              <div key={data.id} className="relative">
-                {/* Result Header Image */}
-                <Image
-                  alt="Result"
-                  src={ResultHeader}
-                  className="w-full h-auto object-cover rounded-t-lg"
-                />
+            {Array.isArray(winnerData) &&
+              winnerData.map((data) => (
+                <div key={data.id} className="relative">
+                  {/* Result Header Image */}
+                  <Image
+                    alt="Result"
+                    src={ResultHeader}
+                    className="w-full h-auto object-cover rounded-t-lg"
+                  />
 
-                {/* Prizes and Numbers Section */}
-                <div className="text-center px-5 pt-2 overflow-y-auto">
-                  <div key={data.id}>
-                    {data?.prizes?.map((prize, index) => (
-                      <div key={index}>
-                        <h3 className="text-xl m-3 font-bold">{prize.prize}</h3>
-                        <div className="grid grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2 mb-8">
-                          {prize.numbers[0]
-                            ?.split(",")
-                            ?.map((number, numberIndex) => (
+                  {/* Prizes and Numbers Section */}
+                  <div className="text-center px-5 pt-2 overflow-y-auto">
+                    <div key={data.id}>
+                      {data?.prizes?.map((prize, index) => (
+                        <div key={index}>
+                          <h3 className="text-xl m-3 font-bold">
+                            {prize.prize}
+                          </h3>
+                          <div className="grid grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2 mb-8">
+                            {prize?.numbers?.map((number, numberIndex) => (
                               <span
                                 key={numberIndex}
                                 className="text-sm p-1 bg-gray-100 rounded"
@@ -394,26 +412,26 @@ export default function Home() {
                                 {number.trim()}
                               </span>
                             ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Footer Section */}
+                  <div className="px-4 py-2 flex justify-between bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400">
+                    <h1 className="text-2xl text-amber-300 font-bold">
+                      {data.date}
+                    </h1>
+                    <h1 className="text-2xl text-amber-300 font-bold">
+                      {data.session}
+                    </h1>
+                    <h1 className="text-2xl text-amber-300 font-bold">
+                      {data.date}
+                    </h1>
                   </div>
                 </div>
-
-                {/* Footer Section */}
-                <div className="px-4 py-2 flex justify-between bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400">
-                  <h1 className="text-2xl text-amber-300 font-bold">
-                    {data.date}
-                  </h1>
-                  <h1 className="text-2xl text-amber-300 font-bold">
-                    {data.session}
-                  </h1>
-                  <h1 className="text-2xl text-amber-300 font-bold">
-                    {data.date}
-                  </h1>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       )}
