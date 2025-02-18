@@ -14,7 +14,6 @@ export default function Home() {
   const [showWinners, setShowWinners] = useState(false);
 
   const [resultData, setResultData] = useState([]);
-  console.log(resultData, "resultData");
   const [update, setUpdate] = useState(false);
   const [winnerData, setWinnerData] = useState("");
 

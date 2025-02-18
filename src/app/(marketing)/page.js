@@ -53,13 +53,12 @@ export default function Home() {
   const [addPopupOpen, setAddPopupOpen] = useState(false);
 
   const [schemeList, setSchemeList] = useState([]);
-  const [editScheme, setEditScheme] = useState(null);
-
   const [superStockistList, setSuperStockistList] = useState([]);
   const [stockistList, setStockistList] = useState([]);
   const [retailerList, setRetailerList] = useState([]);
   const [usersList, setUsersList] = useState([]);
 
+  const [editScheme, setEditScheme] = useState(null);
   const [editUsers, setEditUsers] = useState(null);
 
   const [showDeletePopup, setShowDeletePopup] = useState(false);
@@ -78,15 +77,25 @@ export default function Home() {
   const handleAddPopup = () => {
     setAddPopupOpen(!addPopupOpen);
     setEditScheme(null);
+    setEditUsers(null);
   };
 
   const handleEdit = (id) => {
     if (activeTab === 0) {
       const itemToEdit = schemeList.find((item) => item.id === id);
       setEditScheme(itemToEdit);
+    } else if (activeTab === 1) {
+      const itemToEdit = superStockistList.find((item) => item.id === id);
+      setEditUsers(itemToEdit);
+    } else if (activeTab === 2) {
+      const itemToEdit = stockistList.find((item) => item.id === id);
+      setEditUsers(itemToEdit);
+    } else if (activeTab === 3) {
+      const itemToEdit = retailerList.find((item) => item.id === id);
+      setEditUsers(itemToEdit);
     } else {
       const itemToEdit = usersList.find((item) => item.id === id);
-      setEditScheme(itemToEdit);
+      setEditUsers(itemToEdit);
     }
 
     setAddPopupOpen(true);
@@ -94,7 +103,7 @@ export default function Home() {
 
   const handleDelete = (id) => {
     setDeletingItem(id);
-    setShowDeletePopup(false);
+    setShowDeletePopup(true);
   };
 
   const handleCancelDelete = () => {
@@ -106,6 +115,18 @@ export default function Home() {
       setSchemeList((prevData) =>
         prevData.filter((item) => item.id !== deletingItem)
       );
+    } else if (activeTab === 1) {
+      setSuperStockistList((prevData) =>
+        prevData.filter((item) => item.id !== deletingItem)
+      );
+    } else if (activeTab === 2) {
+      setStockistList((prevData) =>
+        prevData.filter((item) => item.id !== deletingItem)
+      );
+    } else if (activeTab === 3) {
+      setRetailerList((prevData) =>
+        prevData.filter((item) => item.id !== deletingItem)
+      );
     } else {
       setUsersList((prevData) =>
         prevData.filter((item) => item.id !== deletingItem)
@@ -113,6 +134,14 @@ export default function Home() {
     }
 
     setShowDeletePopup(false);
+  };
+
+  const generateRefId = () => {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const timeString = now.getTime().toString().slice(-6);
+    return `I${month}${day}${timeString}`;
   };
 
   const handleCreateScheme = (newSchemeData) => {
@@ -125,7 +154,7 @@ export default function Home() {
     } else {
       setSchemeList((prevData) => [
         ...prevData,
-        { ...newSchemeData, id: prevData.length + 1 },
+        { ...newSchemeData, id: generateRefId() },
       ]);
     }
     setAddPopupOpen(false);
@@ -134,7 +163,6 @@ export default function Home() {
 
   const handleCreateUsers = (newUsersData) => {
     if (editUsers) {
-      // If editing an existing user, update the correct list based on activeTab
       if (activeTab === 1) {
         setSuperStockistList((prevData) =>
           prevData.map((item) =>
@@ -161,26 +189,25 @@ export default function Home() {
         );
       }
     } else {
-      // If adding a new user, add to the correct list based on activeTab
       if (activeTab === 1) {
         setSuperStockistList((prevData) => [
           ...prevData,
-          { ...newUsersData, id: prevData.length + 1 },
+          { ...newUsersData, id: generateRefId() },
         ]);
       } else if (activeTab === 2) {
         setStockistList((prevData) => [
           ...prevData,
-          { ...newUsersData, id: prevData.length + 1 },
+          { ...newUsersData, id: generateRefId() },
         ]);
       } else if (activeTab === 3) {
         setRetailerList((prevData) => [
           ...prevData,
-          { ...newUsersData, id: prevData.length + 1 },
+          { ...newUsersData, id: generateRefId() },
         ]);
       } else if (activeTab === 4) {
         setUsersList((prevData) => [
           ...prevData,
-          { ...newUsersData, id: prevData.length + 1 },
+          { ...newUsersData, id: generateRefId() },
         ]);
       }
     }
@@ -192,19 +219,19 @@ export default function Home() {
 
   return (
     <>
-      <div className="px-5 py-5">
-        <div className="flex border-b">
-          {tabData.map((tab, index) => (
+      <div className="p-5">
+        <div className="flex flex-wrap border-b">
+          {tabData.map((tab) => (
             <button
               key={tab.tabId}
-              className={`py-2 px-4 text-sm ${
+              className={`py-2 px-4 text-sm flex-shrink-0 mb-2 mr-2 rounded-t-lg transition-colors duration-200 ${
                 activeTab === tab.tabId
-                  ? "border-b-2 border-blue-500 text-blue-500"
-                  : "text-gray-600 hover:text-blue-500"
+                  ? "border-b-2 border-blue-500 text-blue-500 bg-blue-50"
+                  : "text-gray-600 hover:text-blue-500 hover:bg-gray-50"
               }`}
               onClick={() => setActiveTab(tab.tabId)}
             >
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center whitespace-nowrap">
                 <tab.icon className="text-sm mr-2" />
                 {tab.title}
               </div>
@@ -249,7 +276,7 @@ export default function Home() {
           <CreateStockistModal
             isOpen={addPopupOpen}
             width="max-w-4xl"
-            title={editUsers ? "Update" : "Add"}
+            title={editUsers ? "Update Users" : "Add Users"}
             btnText={editUsers ? "Update Changes" : "Save Changes"}
             onClose={handleAddPopup}
             onCreate={handleCreateUsers}

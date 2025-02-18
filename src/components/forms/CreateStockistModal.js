@@ -32,25 +32,6 @@ export default function CreateStockistModal({
   });
 
   useEffect(() => {
-    if (activeTab === 1) {
-      setSchemeFormData((prevState) => ({
-        ...prevState,
-        mode: "Super Stockist",
-      }));
-    } else if (activeTab === 2) {
-      setSchemeFormData((prevState) => ({
-        ...prevState,
-        mode: "Stockist",
-      }));
-    } else if (activeTab === 3) {
-      setSchemeFormData((prevState) => ({
-        ...prevState,
-        mode: "Retailer",
-      }));
-    }
-  }, [activeTab]);
-
-  useEffect(() => {
     if (initialValues) {
       setSchemeFormData({
         mode: initialValues.mode,
@@ -86,19 +67,16 @@ export default function CreateStockistModal({
       !schemeFormData.status ||
       (activeTab === 4 && !schemeFormData.role) ||
       (activeTab === 1 &&
-        (!schemeFormData.mode ||
-          !schemeFormData.rate5 ||
+        (!schemeFormData.rate5 ||
           !schemeFormData.rate5b ||
           !schemeFormData.rate10)) ||
       (activeTab === 2 &&
         (!schemeFormData.superStockist ||
-          !schemeFormData.mode ||
           !schemeFormData.rate5 ||
           !schemeFormData.rate5b ||
           !schemeFormData.rate10)) ||
       (activeTab === 3 &&
         (!schemeFormData.stockist ||
-          !schemeFormData.mode ||
           !schemeFormData.rate5 ||
           !schemeFormData.rate5b ||
           !schemeFormData.rate10))
@@ -133,14 +111,22 @@ export default function CreateStockistModal({
       };
 
       if (activeTab === 1) {
-        onCreate(dataToSubmit);
+        onCreate({
+          ...dataToSubmit,
+          mode: "Super Stockist",
+        });
       } else if (activeTab === 2) {
         onCreate({
           ...dataToSubmit,
+          mode: "Stockist",
           superStockist: schemeFormData?.superStockist,
         });
       } else if (activeTab === 3) {
-        onCreate({ ...dataToSubmit, stockist: schemeFormData?.stockist });
+        onCreate({
+          ...dataToSubmit,
+          mode: "Retailer",
+          stockist: schemeFormData?.stockist,
+        });
       } else if (activeTab === 4) {
         onCreate(userDataToSubmit);
       }
