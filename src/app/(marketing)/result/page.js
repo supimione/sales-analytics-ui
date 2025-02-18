@@ -200,12 +200,17 @@ export default function Home() {
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 {masterData.tableHeader.result.map((item) => (
-                  <th scope="col" className="px-6 py-3" key={item}>
+                  <th
+                    key={item}
+                    scope="col"
+                    className="px-3 py-3 whitespace-nowrap"
+                  >
                     {item}
                   </th>
                 ))}
               </tr>
             </thead>
+
             {resultData?.length > 0 ? (
               <tbody>
                 {resultData?.map((item, index) => (

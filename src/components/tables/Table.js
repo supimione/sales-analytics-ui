@@ -12,7 +12,7 @@ const Table = ({ headers, data, onEdit, onDelete }) => {
                 <th
                   key={header}
                   scope="col"
-                  className={`px-6 py-3 ${
+                  className={`px-3 py-3 whitespace-nowrap ${
                     index === headers.length - 1 ? "float-right" : ""
                   }`}
                 >
@@ -21,7 +21,6 @@ const Table = ({ headers, data, onEdit, onDelete }) => {
               ))}
             </tr>
           </thead>
-
           {data?.length > 0 ? (
             <tbody>
               {data.map((item, index) => (

@@ -62,12 +62,17 @@ export default function SalesList({
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 {tableHeader.map((header) => (
-                  <th key={header} scope="col" className="px-3 py-3">
+                  <th
+                    key={header}
+                    scope="col"
+                    className="px-3 py-3 whitespace-nowrap"
+                  >
                     {header}
                   </th>
                 ))}
               </tr>
             </thead>
+
             {currentItems.length > 0 ? (
               <tbody>
                 {currentItems.map((item, index) => (

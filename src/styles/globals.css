@@ -20,7 +20,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 .main-min-height {
-  min-height: calc(100vh - 75px);
+  min-height: calc(100vh - 120px);
+}
+
+select {
+  min-height: 35px;
 }
 
 /* For Webkit browsers (Chrome, Safari, Edge) */
