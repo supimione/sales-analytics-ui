@@ -32,7 +32,7 @@ export default function MarketingLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Sidebar sidebarOpen={sidebarOpen} />
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Header sidebarToggle={handleSidebarToggle} />
         <main className="ml-0 lg:ml-60 px-3">
           <div className="bg-white main-min-height text-[rgba(58,53,65,0.87)] transition-shadow duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] rounded-md shadow-[0px_2px_10px_0px_rgba(58,53,65,0.1)]">

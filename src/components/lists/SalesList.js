@@ -32,12 +32,12 @@ export default function SalesList({
   return (
     <>
       {showHeader && (
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-xl font-bold">{title}</h1>
-          <div className="flex justify-between items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
+          <h1 className="text-xl font-bold w-full sm:w-auto">{title}</h1>
+          <div className="flex justify-between sm:justify-end items-center gap-4 w-full sm:w-auto">
             <select
               name="filter"
-              className="px-2 cursor-pointer font-bold py-2 text-sm bg-white border border-gray-200 rounded-lg"
+              className="px-2 cursor-pointer font-bold py-2 text-sm bg-white border border-gray-200 rounded-lg w-1/2 sm:w-auto"
             >
               {masterData.masterDropdown.filterData.map((status, index) => (
                 <option key={index} value={status}>
@@ -47,7 +47,7 @@ export default function SalesList({
             </select>
             <button
               onClick={generateExcel}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-md focus:outline-none flex items-center"
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-md focus:outline-none flex items-center w-1/2 sm:w-auto justify-center"
             >
               <FaFileExcel className="mr-2" />
               Export

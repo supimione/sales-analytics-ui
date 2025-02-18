@@ -12,8 +12,6 @@
     "@reduxjs/toolkit": "^2.5.0",
     "axios": "^1.7.9",
     "file-saver": "^2.0.5",
-    "html2pdf.js": "^0.10.2",
-    "jspdf": "^2.5.2",
     "mongoose": "^8.9.5",
     "next": "15.1.4",
     "nodemailer": "^6.10.0",

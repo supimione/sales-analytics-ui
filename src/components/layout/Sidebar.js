@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import HeaderLogo from "@/images/header-logo.png";
+import { IoMdClose } from "react-icons/io";
 import {
   FaHome,
   FaTicketAlt,
@@ -22,13 +24,24 @@ const menuItems = [
   { id: 6, link: "/reports", title: "Daily Reports", icon: FaClipboardList },
 ];
 
-export default function Sidebar({ sidebarOpen }) {
-  const [openMenu, setOpenMenu] = useState(1);
+export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
+  const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState(1);
 
-  const toggleMenu = (id) => {
+  useEffect(() => {
+    // Find the menu item that matches the current path
+    const currentMenu = menuItems.find((item) => item.link === pathname);
+    if (currentMenu) {
+      setActiveMenu(currentMenu.id);
+    }
+  }, [pathname]);
+
+  const handleLinkClick = (id) => {
     setActiveMenu(id);
-    setOpenMenu(openMenu === id ? 1 : id);
+    // Close sidebar on mobile when a link is clicked
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
   };
 
   return (
@@ -39,8 +52,15 @@ export default function Sidebar({ sidebarOpen }) {
           : "-translate-x-full lg:translate-x-0"
       }`}
     >
-      <div className="p-6">
+      <div className="p-6 flex justify-between items-center">
         <Image src={HeaderLogo} className="w-40" alt="LMS Logo" />
+        {/* Close button - only visible on mobile */}
+        <button
+          className="ml-6 lg:hidden text-gray-500 hover:text-gray-700"
+          onClick={() => setSidebarOpen(false)}
+        >
+          <IoMdClose size={24} />
+        </button>
       </div>
 
       <div className="h-full pb-4 overflow-y-auto flex-grow">
@@ -54,7 +74,7 @@ export default function Sidebar({ sidebarOpen }) {
                     ? "text-white rounded-r-3xl shadow-[0px_4px_8px_-4px_rgba(58,53,65,0.42)] bg-gradient-to-r from-[#5f90fd] to-[#2e6ce2]"
                     : "text-gray-700"
                 }`}
-                onClick={() => toggleMenu(item.id)}
+                onClick={() => handleLinkClick(item.id)}
               >
                 <span className="p-2 mr-2 text-lg">
                   <item.icon />

@@ -14,7 +14,11 @@ export default function Home() {
   const [showWinners, setShowWinners] = useState(false);
 
   const [resultData, setResultData] = useState([]);
+  const [formData, setFormData] = useState({});
+
   const [update, setUpdate] = useState(false);
+  const [editId, setEditId] = useState(null);
+
   const [winnerData, setWinnerData] = useState("");
 
   const tenInputs = Array.from({ length: 10 }, (_, i) => i + 1); // Create an array of numbers 1 to 10
@@ -22,25 +26,10 @@ export default function Home() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    if (
-      (name.startsWith("secondPrize") ||
-        name.startsWith("thirdPrize") ||
-        name.startsWith("fourthPrize") ||
-        name.startsWith("fifthPrize")) &&
-      /^\d*$/.test(value) &&
-      value.length <= 5
-    ) {
-      setResultData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    } else {
-      setResultData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleOpenPopup = () => {
@@ -53,13 +42,39 @@ export default function Home() {
     setWinnerData(resultData.filter((item) => item.id === data?.id)); // Corrected the filter condition
   };
 
+  const handleEditTicketPrize = (item) => {
+    setUpdate(true);
+    setEditId(item.id);
+
+    // Populate form with existing data
+    const formValues = {
+      date: item.date,
+      session: item.session,
+      ticket: item.ticket,
+      firstPrize: item.firstPrize,
+    };
+
+    // Add prize numbers to form values
+    item.prizes.forEach((prize, index) => {
+      const prefix = ["secondPrize", "thirdPrize", "fourthPrize", "fifthPrize"][
+        index
+      ];
+      prize.numbers.forEach((number, idx) => {
+        formValues[`${prefix}${idx + 1}`] = number;
+      });
+    });
+
+    setFormData(formValues);
+    setPopupOpen(true);
+  };
+
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
 
     const getPrizeNumbers = (prefix) => {
       const prizeNumbers = [];
       for (let i = 1; i <= 10; i++) {
-        const prizeValue = resultData[`${prefix}${i}`];
+        const prizeValue = formData[`${prefix}${i}`];
         if (prizeValue) {
           prizeNumbers.push(prizeValue);
         }
@@ -70,7 +85,7 @@ export default function Home() {
     const getFifthPrizeNumbers = (prefix) => {
       const prizeNumbers = [];
       for (let i = 1; i <= 100; i++) {
-        const prizeValue = resultData[`${prefix}${i}`];
+        const prizeValue = formData[`${prefix}${i}`];
         if (prizeValue) {
           prizeNumbers.push(prizeValue);
         }
@@ -87,11 +102,11 @@ export default function Home() {
     };
 
     const combinedData = {
-      id: generateTicketRef(),
-      date: resultData.date,
-      session: resultData.session,
-      lotteryName: resultData.ticket,
-      firstPrize: resultData.firstPrize,
+      id: update ? editId : generateTicketRef(),
+      date: formData.date,
+      session: formData.session,
+      ticket: formData.ticket,
+      firstPrize: formData.firstPrize,
       prizes: [
         {
           prize: "2nd Prize 9000/- for Seller ₹500/-",
@@ -111,25 +126,52 @@ export default function Home() {
         },
       ],
     };
-    setResultData((prevData) =>
-      Array.isArray(prevData) ? [...prevData, combinedData] : [combinedData]
-    );
+
+    if (update) {
+      setResultData((prevData) =>
+        prevData.map((item) => (item.id === editId ? combinedData : item))
+      );
+    } else {
+      setResultData((prevData) => [...prevData, combinedData]);
+    }
+
+    setFormData({});
     setPopupOpen(false);
+    setUpdate(false);
+    setEditId(null);
   };
 
-  // Validation function to check if all required fields are filled
+  const handleDownloadPDF = () => {};
+
   const isFormValid = () => {
-    return (
-      resultData.date &&
-      resultData.session &&
-      resultData.ticket &&
-      resultData.firstPrize &&
-      // Check if at least one prize is filled
-      (resultData.secondPrize1 ||
-        resultData.thirdPrize1 ||
-        resultData.fourthPrize1 ||
-        resultData.fifthPrize1)
+    // Check if required fields are filled
+    if (
+      !formData.date ||
+      !formData.session ||
+      !formData.ticket ||
+      !formData.firstPrize
+    ) {
+      return false;
+    }
+
+    // Check if at least one number is entered for each prize category (2nd, 3rd, 4th)
+    const hasSecondPrize = Array.from({ length: 10 }).some(
+      (_, i) => formData[`secondPrize${i + 1}`]
     );
+    const hasThirdPrize = Array.from({ length: 10 }).some(
+      (_, i) => formData[`thirdPrize${i + 1}`]
+    );
+    const hasFourthPrize = Array.from({ length: 10 }).some(
+      (_, i) => formData[`fourthPrize${i + 1}`]
+    );
+
+    // Check if ALL 100 fields are filled for 5th prize
+    const hasFifthPrize = Array.from({ length: 100 }).every((_, i) => {
+      const value = formData[`fifthPrize${i + 1}`];
+      return value !== undefined && value !== null && value !== "";
+    });
+
+    return hasSecondPrize && hasThirdPrize && hasFourthPrize && hasFifthPrize;
   };
 
   return (
@@ -184,17 +226,17 @@ export default function Home() {
                       Show Result - {index + 1}
                     </td>
                     <td className="px-6 py-2 text">{item.date}</td>
-                    <td className="px-6 py-2 text">{item.lotteryName}</td>
+                    <td className="px-6 py-2 text">{item.ticket}</td>
                     <td className="px-6 py-2 text">{item.session}</td>
                     <td
                       className="px-6 py-2 text text-blue-500 underline cursor-pointer"
-                      // onClick={handleDownloadPDF}
+                      onClick={handleDownloadPDF}
                     >
                       Download
                     </td>
                     <td className="px-6 py-2 text flex space-x-2 text-blue-500">
                       <button
-                        // onClick={handleEditTicketPrize}
+                        onClick={() => handleEditTicketPrize(item)}
                         className="px-4 py-1 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all duration-300"
                       >
                         Edit
@@ -241,7 +283,7 @@ export default function Home() {
                   <input
                     type="date"
                     name="date"
-                    value={resultData?.date || ""}
+                    value={formData?.date || ""}
                     onChange={handleChange}
                     className="w-full px-4 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                   />
@@ -251,7 +293,7 @@ export default function Home() {
                   <select
                     name="session"
                     onChange={handleChange}
-                    value={resultData?.session}
+                    value={formData?.session}
                     className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700 focus:outline-none"
                   >
                     <option>---</option>
@@ -267,6 +309,7 @@ export default function Home() {
                   <select
                     name="ticket"
                     onChange={handleChange}
+                    value={formData?.ticket}
                     className="w-full px-2 py-2 border text-sm rounded bg-gray-100 text-gray-700 focus:outline-none"
                   >
                     <option>---</option>
@@ -284,7 +327,7 @@ export default function Home() {
                 <input
                   type="text"
                   name="firstPrize"
-                  value={resultData?.firstPrize || ""}
+                  value={formData?.firstPrize || ""}
                   onChange={handleChange}
                   className="w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                 />
@@ -299,7 +342,7 @@ export default function Home() {
                     name={`secondPrize${num}`}
                     placeholder={`${num}`}
                     onChange={handleChange}
-                    value={resultData[`secondPrize${num}`] || ""}
+                    value={formData[`secondPrize${num}`] || ""}
                     className={
                       "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
@@ -316,7 +359,7 @@ export default function Home() {
                     name={`thirdPrize${num}`}
                     placeholder={`${num}`}
                     onChange={handleChange}
-                    value={resultData[`thirdPrize${num}`] || ""}
+                    value={formData[`thirdPrize${num}`] || ""}
                     className={
                       "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
@@ -333,7 +376,7 @@ export default function Home() {
                     name={`fourthPrize${num}`}
                     placeholder={`${num}`}
                     onChange={handleChange}
-                    value={resultData[`fourthPrize${num}`] || ""}
+                    value={formData[`fourthPrize${num}`] || ""}
                     className={
                       "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
@@ -350,7 +393,7 @@ export default function Home() {
                     name={`fifthPrize${num}`}
                     placeholder={`${num}`}
                     onChange={handleChange}
-                    value={resultData[`fifthPrize${num}`] || ""}
+                    value={formData[`fifthPrize${num}`] || ""}
                     className={
                       "w-full px-2 py-1.5 text-sm bg-gray-100 text-gray-700 border border-gray-300 rounded"
                     }
@@ -368,8 +411,12 @@ export default function Home() {
               </button>
               <button
                 onClick={handleSubmit}
-                // disabled={!isFormValid()}
-                className="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
+                disabled={!isFormValid()}
+                className={`px-4 py-2 text-sm text-white rounded ${
+                  isFormValid()
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "bg-blue-300 cursor-not-allowed"
+                }`}
               >
                 {update ? "Update Result" : "Add Result"}
               </button>
@@ -383,7 +430,10 @@ export default function Home() {
           onClick={handleShowWinners}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
         >
-          <div className="bg-white m-2 text-gray-900 border-2 border-cyan-800 rounded-lg shadow-lg w-full max-w-[210mm] max-h-[90vh] overflow-y-auto relative">
+          <div
+            id="winnersContent"
+            className="bg-white m-2 text-gray-900 border-2 border-cyan-800 rounded-lg shadow-lg w-full max-w-[210mm] max-h-[90vh] overflow-y-auto relative"
+          >
             {Array.isArray(winnerData) &&
               winnerData.map((data) => (
                 <div key={data.id} className="relative">
